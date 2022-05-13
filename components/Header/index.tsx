@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { ShoppingCartIcon, MenuIcon } from '@heroicons/react/solid'
 import SideNav from '../SideNav'
+import Button from '../Button'
 
 const Header = () => {
   const [openSideNav, setSideNav] = useState(false)
@@ -15,12 +16,13 @@ const Header = () => {
       <SideNav open={openSideNav} onClose={handleCloseNav} />
       <header className="bg-gray-200 w:full">
         <div className=" container mx-auto p-3 flex flex-nowrap items-center">
-          <button
-            className="border-solid border-2 border-transparent p-2 md:hidden mr-2 rounded-3xl hover:bg-amber-600/20 active:border-amber-500"
+          <Button
+            className="mr-2 md:hidden"
+            icon
             onClick={() => setSideNav(!openSideNav)}
           >
             <MenuIcon className="h-6 w-6 text-slate-500" />
-          </button>
+          </Button>
           <h5 className="text-3xl md:text-4xl font-serif text-amber-600">
             Pubsgate
           </h5>

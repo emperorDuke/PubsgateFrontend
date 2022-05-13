@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { SideNavProps } from './@types'
+import Button from '../Button'
 import { XIcon } from '@heroicons/react/solid'
 
 const SideNav: React.ComponentType<SideNavProps> = (props) => {
@@ -16,11 +17,12 @@ const SideNav: React.ComponentType<SideNavProps> = (props) => {
       {props.open && (
         <React.Fragment>
           <div className="fixed inset-0 bg-black/60" aria-hidden="true" />
-          <div className="w-60 h-screen shadow-lg bg-white px-1 absolute">
-            <div className="flex flex-end">
-              <button onClick={props.onClose}>
+          <div className="w-60 h-screen shadow-lg bg-white px-1 py-3 absolute">
+            <div className="flex">
+              <div className="grow"></div>
+              <Button onClick={props.onClose} icon>
                 <XIcon className="w-6 h-6" />
-              </button>
+              </Button>
             </div>
 
             <ul>

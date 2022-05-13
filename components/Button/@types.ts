@@ -1,5 +1,5 @@
-import React from "react";
+import React, { ButtonHTMLAttributes } from "react";
 
-export interface ButtonProps {
-    children?: React.ReactNode
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+    icon?: boolean;
 }

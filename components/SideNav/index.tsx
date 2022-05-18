@@ -16,40 +16,19 @@ const SideNav: React.ComponentType<SideNavProps> = (props) => {
     <React.Fragment>
       {props.open && (
         <React.Fragment>
-          <div className="fixed inset-0 bg-black/60" aria-hidden="true" />
-          <div className="w-60 h-screen shadow-lg bg-white px-1 py-3 absolute">
+          <div className="fixed inset-0 bg-black/60 z-50" aria-hidden="true" />
+          <div className="w-60 h-screen shadow-lg bg-white px-1 py-3 absolute z-50">
             <div className="flex">
               <div className="grow"></div>
-              <Button onClick={props.onClose} icon>
+              <Button onClick={props.onClose} variant="icon">
                 <XIcon className="w-6 h-6" />
               </Button>
             </div>
 
             <ul>
-              <li>
-                <a
-                  className="flex items-center text-sm py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-300 ease-in-out"
-                  href="#!"
-                >
-                  Sidenav link 1
-                </a>
-              </li>
-              <li>
-                <a
-                  className="flex items-center text-sm py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-300 ease-in-out"
-                  href="#!"
-                >
-                  Sidenav link 2
-                </a>
-              </li>
-              <li>
-                <a
-                  className="flex items-center text-sm py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-300 ease-in-out"
-                  href="#!"
-                >
-                  Sidenav link 2
-                </a>
-              </li>
+              {props.navigations.map((navigation) => (
+                <li key={navigation.label}>{navigation.label}</li>
+              ))}
             </ul>
           </div>
         </React.Fragment>

@@ -11,7 +11,7 @@ const Button: React.ComponentType<ButtonProps> = (props) => {
 
   if (props.variant === 'icon') {
     classes.push(
-      'border-transparent rounded-3xl hover:bg-amber-600/20 active:border-amber-500',
+      'border-transparent rounded-full hover:bg-amber-600/20 active:border-amber-500',
     )
   }
 

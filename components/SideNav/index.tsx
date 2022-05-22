@@ -17,7 +17,7 @@ const SideNav: React.ComponentType<SideNavProps> = (props) => {
       {props.open && (
         <React.Fragment>
           <div className="fixed inset-0 bg-black/60 z-50" aria-hidden="true" />
-          <div className="w-60 h-screen shadow-lg bg-white px-1 py-3 absolute z-50">
+          <aside className="w-60 h-screen shadow-lg bg-white px-1 py-3 absolute z-50">
             <div className="flex">
               <div className="grow"></div>
               <Button onClick={props.onClose} variant="icon">
@@ -30,7 +30,7 @@ const SideNav: React.ComponentType<SideNavProps> = (props) => {
                 <li key={navigation.label}>{navigation.label}</li>
               ))}
             </ul>
-          </div>
+          </aside>
         </React.Fragment>
       )}
     </React.Fragment>

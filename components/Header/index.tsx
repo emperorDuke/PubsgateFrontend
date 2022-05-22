@@ -15,19 +15,19 @@ const navigations: NavBarProps['navigations'] = [
         link: '/',
       },
       {
-        label: 'biolife',
+        label: 'Bioenergy',
         link: '/',
       },
       {
-        label: 'biolife',
+        label: 'all life',
         link: '/',
       },
       {
-        label: 'biolife',
+        label: 'biofuel',
         link: '/',
       },
       {
-        label: 'biolife',
+        label: 'biprotein',
         link: '/',
       },
     ],

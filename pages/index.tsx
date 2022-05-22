@@ -3,9 +3,127 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import Header from '../components/Header'
-import Registration from '../components/Registration'
 import SeachBar from '../components/SearchBar'
-import styles from '../styles/Home.module.css'
+import SubjectNavigation from '../components/SubjectNavigation'
+import Link from 'next/link'
+import { ArrowRightIcon } from '@heroicons/react/solid'
+
+const subjects = [
+  {
+    id: '1',
+    label: 'arts',
+    link: '/',
+  },
+  {
+    id: '2',
+    label: 'life sciences',
+    link: '/',
+  },
+  {
+    id: '3',
+    label: 'engineering',
+    link: '/',
+  },
+  {
+    id: '4',
+    label: 'social sciences',
+    link: '/',
+  },
+  {
+    id: '5',
+    label: 'Education',
+    link: '/',
+  },
+  {
+    id: '6',
+    label: 'Agricultural sciences',
+    link: '/',
+  },
+  {
+    id: 7,
+    label: 'Chemistry',
+    link: '/',
+  },
+  {
+    id: 8,
+    label: 'Physics',
+    link: '/',
+  },
+  {
+    id: 9,
+    label: 'Architecture and Building',
+    link: '/',
+  },
+  {
+    id: 10,
+    label: 'Management sciences',
+    link: '/',
+  },
+  {
+    id: 11,
+    label: 'Phamaceutical sciences',
+    link: '/',
+  },
+  {
+    id: 12,
+    label: 'Basic medical sciences',
+    link: '/',
+  },
+]
+
+const resources = [
+  {
+    heading: 'For authors',
+    body:
+      'With the researcher at the heart of the publishing experience, we have created a diverse portfolio of peer-reviewed, open access journals across a wide range of scientific and medical disciplines. Choose the journal that fits your niche.',
+    link: '/',
+  },
+  {
+    heading: 'For editors',
+    body:
+      'With the researcher at the heart of the publishing experience, we have created a diverse portfolio of peer-reviewed, open access journals across a wide range of scientific and medical disciplines. Choose the journal that fits your niche.',
+    link: '/',
+  },
+  {
+    heading: 'For societies',
+    body:
+      'With the researcher at the heart of the publishing experience, we have created a diverse portfolio of peer-reviewed, open access journals across a wide range of scientific and medical disciplines. Choose the journal that fits your niche.',
+    link: '/',
+  },
+]
+
+const articles = [
+  {
+    image: '/green.jpg',
+    link: '/',
+    title:
+      'Boquila trifoliolata mimics leaves of an artificial plastic host plants',
+  },
+  {
+    image: '/green.jpg',
+    link: '/',
+    title:
+      'Boquila trifoliolata mimics leaves of an artificial plastic host plants',
+  },
+  {
+    image: '/green.jpg',
+    link: '/',
+    title:
+      'Boquila trifoliolata mimics leaves of an artificial plastic host plants',
+  },
+  {
+    image: '/green.jpg',
+    link: '/',
+    title:
+      'Boquila trifoliolata mimics leaves of an artificial plastic host plants',
+  },
+  {
+    image: '/green.jpg',
+    link: '/',
+    title:
+      'Boquila trifoliolata mimics leaves of an artificial plastic host plants',
+  },
+]
 
 const Home: NextPage = () => {
   return (
@@ -16,93 +134,103 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <div className="w-full h-72 relative">
-        {/**
-         * Search bar unit
-         */}
-        <div className="absolute z-20 w-full h-full">
-          <div className="container mx-auto flex items-center justify-center h-full px-3 md:px-0">
-            <div className="w-full md:w-auto">
-              <span className="mb-2 text-white text-lg font-semibold block">
-                Search for Articles:
-              </span>
-              <SeachBar />
+      <main>
+        <div className="w-full h-72 relative">
+          <div className="absolute z-20 w-full h-full">
+            <div className="container mx-auto flex items-center justify-center h-full px-3 md:px-0">
+              <div className="w-full md:w-auto">
+                <h5 className="mb-2 text-white text-lg font-semibold block">
+                  Search for Articles:
+                </h5>
+                <SeachBar />
+              </div>
             </div>
           </div>
+          <Image
+            src="/green.jpg"
+            alt="green"
+            layout="fill"
+            className="opacity-50"
+          />
         </div>
+        <div className="container mx-auto px-3">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-1 md:gap-6 mt-6">
+            <div className=" col-span-2">
+              <h2 className="text-2xl md:text-3xl font-semibold mb-6">
+                Explore by subject disciplines
+              </h2>
+              <div className="rounded-xl">
+                <SubjectNavigation subjects={subjects} />
+              </div>
+            </div>
+            <div className="col-span-3">
+              <div className="flex flex-col flex-nowrap">
+                {/** Carousel start */}
+                <div className="w-full h-64 bg-slate-300 rounded-lg mt-6 md:mt-0">
+                  Carousel layout
+                </div>
+                {/**end */}
 
-        {/**
-         * Background Image
-         */}
-        <Image
-          src="/green.jpg"
-          alt="green"
-          layout="fill"
-          className="opacity-50"
-        />
-      </div>
-
-      <div className={styles.container}>
-        <main className={styles.main}>
-          <Registration />
-          <h1 className={styles.title}>
-            Welcome to <a href="https://nextjs.org">Next.js!</a>
-          </h1>
-
-          <p className={styles.description}>
-            Get started by editing{' '}
-            <code className={styles.code}>pages/index.tsx</code>
-          </p>
-
-          <div className={styles.grid}>
-            <a href="https://nextjs.org/docs" className={styles.card}>
-              <h2>Documentation &rarr;</h2>
-              <p>Find in-depth information about Next.js features and API.</p>
-            </a>
-
-            <a href="https://nextjs.org/learn" className={styles.card}>
-              <h2>Learn &rarr;</h2>
-              <p>Learn about Next.js in an interactive course with quizzes!</p>
-            </a>
-
-            <a
-              href="https://github.com/vercel/next.js/tree/canary/examples"
-              className={styles.card}
-            >
-              <h2>Examples &rarr;</h2>
-              <p>Discover and deploy boilerplate example Next.js projects.</p>
-            </a>
-
-            <a
-              href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              className={styles.card}
-            >
-              <h2>Deploy &rarr;</h2>
-              <p>
-                Instantly deploy your Next.js site to a public URL with Vercel.
-              </p>
-            </a>
+                {/** resources start */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                  {resources.map((resource) => (
+                    <div
+                      className="w-full shadow-lg drop-shadow-lg border-solid border-x-2 rounded-lg"
+                      key={resource.heading}
+                    >
+                      <div className="bg-amber-600 w-full h-2 rounded-t-lg"></div>
+                      <div className="p-3">
+                        <h3 className="text-xl md:text-2xl text-slate-600 font-semibold mb-2">
+                          {resource.heading}
+                        </h3>
+                        <article className="text-lg">{resource.body}</article>
+                        <div className="mt-6 flex">
+                          <div className="grow"></div>
+                          <Link href="/">
+                            <a className="bg-black px-3 py-2 text-white rounded-lg uppercase flex flex-nowrap items-center">
+                              resources
+                              <ArrowRightIcon className="w-5 h-5 ml-3" />
+                            </a>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/** resource end */}
+              </div>
+            </div>
           </div>
-        </main>
-
-        <footer className={styles.footer}>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Powered by{' '}
-            <span className={styles.logo}>
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                width={72}
-                height={16}
-              />
-            </span>
-          </a>
-        </footer>
-      </div>
+          {/** Latest articles start */}
+          <div className="mt-6">
+            <h2 className="text-2xl md:text-3xl font-semibold mb-6">
+              Recent articles
+            </h2>
+            <div className="grid grid-cols-5 gap-6">
+              {articles.map((article, i) => (
+                <Link href={article.link} key={i + 1}>
+                  <a className="col-span-5 md:col-span-1 shadow-xl drop-shadow-xl drop-shadow-xl border-solid border-x-2 rounded-lg hover:shadow-2xl hover:drop-shadow-2xl">
+                    <div className="relative w-full h-44">
+                      <Image
+                        src={article.image}
+                        alt="green"
+                        layout="fill"
+                        className="rounded-t-lg"
+                      />
+                    </div>
+                    <div className="p-3 h-28">
+                      <h5 className="text-lg font-semibold text-slate-600 truncate">
+                        {article.title}
+                      </h5>
+                    </div>
+                  </a>
+                </Link>
+              ))}
+            </div>
+          </div>
+          {/** latest articles end */}
+        </div>
+      </main>
     </React.Fragment>
   )
 }

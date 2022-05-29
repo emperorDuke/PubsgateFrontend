@@ -50,7 +50,7 @@ const navigations: NavBarProps['navigations'] = [
   },
 ]
 
-const Header = () => {
+const Header: React.ComponentType = () => {
   const [openSideNav, setSideNav] = useState(false)
 
   const handleCloseNav = () => {
@@ -62,52 +62,48 @@ const Header = () => {
   }
 
   return (
-    <React.Fragment>
+    <header className="bg-amber-600 w:full">
       <SideNav
         open={openSideNav}
         onClose={handleCloseNav}
         navigations={navigations}
       />
-      <header className="bg-amber-600 w:full">
-        <div className=" container mx-auto px-3 py-2 flex flex-nowrap items-center">
-          <Button
-            className="mr-2 md:hidden hover:bg-slate-600/20"
-            variant="icon"
-            onClick={toggleSideNav}
-          >
-            <MenuIcon className="h-6 w-6 text-white" />
-          </Button>
-          <h5 className="text-3xl md:text-4xl font-serif text-white">
-            Pubsgate
-          </h5>
-          <div className="grow"></div>
-          <div className="flex space-x-4 md:space-x-20">
-            <div className="flex items-center">
-              <Link href="/">
-                <a className="flex items-center justify-items-center text-white text-base md:text-lg hover:text-slate-500 hover:underline">
-                  Sign in
-                </a>
-              </Link>
-              <div className="text-white text-base md:text-lg px-1 md:px-3">
-                /
-              </div>
-              <Link href="/">
-                <a className="flex items-center justify-items-center text-white text-base md:text-lg hover:text-slate-500 hover:underline">
-                  Sign up
-                </a>
-              </Link>
-            </div>
+      <div className=" container mx-auto py-2 flex flex-nowrap items-center">
+        <Button
+          className="mr-2 md:hidden hover:bg-slate-600/20"
+          variant="icon"
+          onClick={toggleSideNav}
+        >
+          <MenuIcon className="h-6 w-6 text-white" />
+        </Button>
+        <h5 className="text-3xl md:text-4xl font-serif text-white">Pubsgate</h5>
+        <div className="grow"></div>
+        <div className="flex space-x-4 md:space-x-20">
+          <div className="flex items-center">
             <Link href="/">
-              <a className="flex items-center justify-center md:bg-black rounded-lg text-white md:text-white py-2 px-3 text-base md:text-lg hover:text-slate-500 hover:md:bg-slate-500 hover:md:text-white active:text-amber-500">
-                <ShoppingCartIcon className="h-6 w-6 md:mr-3" />
-                <span className="hidden md:inline">Cart</span>
+              <a className="flex items-center justify-items-center text-white text-base md:text-lg hover:text-slate-500 hover:underline">
+                Sign in
+              </a>
+            </Link>
+            <div className="text-white text-base md:text-lg px-1 md:px-3">
+              /
+            </div>
+            <Link href="/registration">
+              <a className="flex items-center justify-items-center text-white text-base md:text-lg hover:text-slate-500 hover:underline">
+                Sign up
               </a>
             </Link>
           </div>
+          <Link href="/">
+            <a className="flex items-center justify-center md:bg-black rounded-lg text-white md:text-white py-2 px-3 text-base md:text-lg hover:text-slate-500 hover:md:bg-slate-500 hover:md:text-white active:text-amber-500">
+              <ShoppingCartIcon className="h-6 w-6 md:mr-3" />
+              <span className="hidden md:inline">Cart</span>
+            </a>
+          </Link>
         </div>
-      </header>
+      </div>
       <NavBar navigations={navigations} />
-    </React.Fragment>
+    </header>
   )
 }
 

@@ -3,11 +3,12 @@ import { ChevronDownIcon } from '@heroicons/react/solid'
 import Link from 'next/link'
 import React from 'react'
 import { NavBarProps } from './@types'
+import clsx from 'classNames'
 
 const NavBar: React.ComponentType<NavBarProps> = (props) => {
   return (
-    <nav className="w-full px-3 py-2 bg-amber-700 hidden md:block">
-      <div className="container mx-auto flex flex-nowrap items-center space-x-4">
+    <nav className="w-full bg-amber-700 hidden md:block">
+      <div className="container mx-auto flex flex-nowrap items-center space-x-4 py-2">
         {props.navigations.map((nav) =>
           nav.options && nav.options.length ? (
             <Menu as="div" key={nav.label}>
@@ -20,14 +21,15 @@ const NavBar: React.ComponentType<NavBarProps> = (props) => {
                   className="bg-white absolute flex flex-col w-40 mt-2 rounded-lg drop-shadow-xl shadow-xl z-50"
                   as="section"
                 >
-                  {nav.options.map((option) => (
-                    <Menu.Item key={option.label}>
+                  {nav.options.map((option, i) => (
+                    <Menu.Item key={i + 1}>
                       {({ active }) => (
                         <Link href={option.link}>
                           <a
-                            className={`${
-                              active && 'bg-red-500'
-                            } p-3 capitalize text-slate-600 hover:bg-amber-100/80`}
+                            className={clsx(
+                              { 'bg-red-500': active },
+                              `p-3 capitalize text-slate-600 hover:bg-amber-100/80`,
+                            )}
                           >
                             {option.label}
                           </a>

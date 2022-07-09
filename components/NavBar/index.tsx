@@ -41,7 +41,7 @@ const NavBar: React.ComponentType<NavBarProps> = (props) => {
               )}
             </Menu>
           ) : (
-            <Link href={nav.link as string}>
+            <Link href={nav.link as string} key={nav.label}>
               <a className="bg-white text-slate-600 py-1 px-2 rounded-lg capitalize flex flex-nowrap items-center border-solid border-2 border-transparent active:border-amber-500 hover:bg-amber-100/80 hover:text-white">
                 {nav.label}
               </a>

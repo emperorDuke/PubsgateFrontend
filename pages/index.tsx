@@ -7,6 +7,8 @@ import SubjectNavigation from '../components/SubjectNavigation'
 import Link from 'next/link'
 import { ArrowRightIcon, KeyIcon } from '@heroicons/react/solid'
 import Button from '../components/Button'
+import Carousel from '../components/Carousel'
+import CarouselItem from '../components/CarouselItem'
 
 const subjects = [
   {
@@ -167,12 +169,36 @@ const Home: NextPage = () => {
               <SubjectNavigation subjects={subjects} />
             </div>
           </div>
-          <div className="col-span-3">
+          <div className="col-span-3 w-full">
             <div className="flex flex-col flex-nowrap">
               {/** Carousel start */}
-              <div className="w-full h-64 bg-slate-300 rounded-lg mt-6 md:mt-0">
-                Carousel layout
-              </div>
+              <Carousel
+                width="500"
+                height="300"
+                infinite
+                autoplay
+                pauseOnMouseEnter
+              >
+                <CarouselItem>
+                  <div className="bg-red-500">vvfvffffffvfvfvfvfvfvf</div>
+                </CarouselItem>
+                <CarouselItem>
+                  <div className="bg-blue-500">p4444444444444</div>
+                </CarouselItem>
+                <CarouselItem>
+                  <div className="bg-amber-500">p4444444444444</div>
+                </CarouselItem>
+                <CarouselItem>
+                  <div className="relative">
+                    <Image
+                      src="/green.jpg"
+                      alt="green"
+                      layout="fill"
+                      className="rounded-t-lg"
+                    />
+                  </div>
+                </CarouselItem>
+              </Carousel>
               {/**end */}
 
               {/** resources start */}

@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
+import clsx from 'classNames'
 import { ShoppingCartIcon, MenuIcon } from '@heroicons/react/solid'
 import SideNav from '../SideNav'
 import Button from '../Button'
 import NavBar from '../NavBar'
 import { NavBarProps } from '../NavBar/@types'
+import { useTheme } from '../../utils/hooks'
 
 const navigations: NavBarProps['navigations'] = [
   {
@@ -52,6 +54,7 @@ const navigations: NavBarProps['navigations'] = [
 
 const Header: React.ComponentType = () => {
   const [openSideNav, setSideNav] = useState(false)
+  const theme = useTheme('light')
 
   const handleCloseNav = () => {
     setSideNav(false)
@@ -62,7 +65,7 @@ const Header: React.ComponentType = () => {
   }
 
   return (
-    <header className="bg-amber-600 w:full">
+    <header className={clsx(`bg-${theme.color.primary}`, 'w:full')}>
       <SideNav
         open={openSideNav}
         onClose={handleCloseNav}
@@ -80,7 +83,7 @@ const Header: React.ComponentType = () => {
         <div className="grow"></div>
         <div className="flex space-x-4 md:space-x-20">
           <div className="flex items-center">
-            <Link href="/">
+            <Link href="/login">
               <a className="flex items-center justify-items-center text-white text-base md:text-lg hover:text-slate-500 hover:underline">
                 Sign in
               </a>
@@ -88,7 +91,7 @@ const Header: React.ComponentType = () => {
             <div className="text-white text-base md:text-lg px-1 md:px-3">
               /
             </div>
-            <Link href="/registration">
+            <Link href="/signup">
               <a className="flex items-center justify-items-center text-white text-base md:text-lg hover:text-slate-500 hover:underline">
                 Sign up
               </a>

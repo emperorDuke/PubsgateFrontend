@@ -1,6 +1,6 @@
 import React from 'react'
 import clsx from 'classNames'
-import { CarouselProps } from './@types'
+import { CarouselProps, TransitionEndPayload } from './@types'
 import { reducer } from './reducer'
 import { getNextPayload, getPrevPayload } from './utils'
 import { CarouselItemProps } from '../CarouselItem/@types'
@@ -72,11 +72,7 @@ const Carousel: React.ComponentType<CarouselProps> = (props) => {
   const timerRef = React.useRef<NodeJS.Timeout | null>(null)
   const countDownRef = React.useRef(count)
   const nextFuncRef = React.useRef(() => {})
-  const transitionEndPayloadRef = React.useRef({
-    slideNo: 0,
-    nChildren: 0,
-    clone: 0,
-  })
+  const transitionEndRef = React.useRef<null | TransitionEndPayload>(null)
 
   useIsomorphicLayoutEffect(() => {
     const getDimension = () => {
@@ -99,20 +95,22 @@ const Carousel: React.ComponentType<CarouselProps> = (props) => {
     }
 
     const handleTransitionEnd = () => {
-      const { clone, nChildren, slideNo } = transitionEndPayloadRef.current
-      const isFirstClone = slideNo === 0
-      const isLastClone = slideNo === nChildren + clone - 1
+      if (transitionEndRef.current) {
+        const { clone, nChildren, slideNo } = transitionEndRef.current
+        const isFirstClone = slideNo === 0
+        const isLastClone = slideNo === nChildren + clone - 1
 
-      if (isFirstClone) {
-        dispatch({
-          type: 'reflowToLast',
-          payload: { nChildren },
-        })
-      } else if (isLastClone) {
-        dispatch({
-          type: 'reflowToFirst',
-          payload: { nChildren },
-        })
+        if (isFirstClone) {
+          dispatch({
+            type: 'reflowToLast',
+            payload: { nChildren },
+          })
+        } else if (isLastClone) {
+          dispatch({
+            type: 'reflowToFirst',
+            payload: { nChildren },
+          })
+        }
       }
     }
 
@@ -153,7 +151,7 @@ const Carousel: React.ComponentType<CarouselProps> = (props) => {
   }, [])
 
   React.useEffect(() => {
-    transitionEndPayloadRef.current = {
+    transitionEndRef.current = {
       slideNo: state.slideNo,
       nChildren,
       clone: CLONE,
@@ -190,22 +188,18 @@ const Carousel: React.ComponentType<CarouselProps> = (props) => {
     nextFuncRef.current = next
   }, [state, next])
 
-  const startCountDown = () => {
-    countDownRef.current = count
-
-    timerRef.current = setInterval(() => {
-      if (countDownRef.current === 0) {
-        countDownRef.current = count
-        nextFuncRef.current()
-      } else {
-        countDownRef.current -= 1
-      }
-    }, SECONDS)
-  }
-
   const startTimer = () => {
     if (props.autoplay) {
-      startCountDown()
+      countDownRef.current = count
+
+      timerRef.current = setInterval(() => {
+        if (countDownRef.current === 0) {
+          countDownRef.current = count
+          nextFuncRef.current()
+        } else {
+          countDownRef.current -= 1
+        }
+      }, SECONDS)
     }
   }
 
@@ -238,7 +232,7 @@ const Carousel: React.ComponentType<CarouselProps> = (props) => {
   }
 
   const play = () => {
-    startCountDown()
+    startTimer()
   }
 
   const handleOnMouseEnter = () => {

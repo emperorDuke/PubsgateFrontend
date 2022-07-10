@@ -243,8 +243,8 @@ const Home: NextPage = () => {
                 <a className="col-span-5 md:col-span-1 shadow-xl border-solid border-x-2 border-b-2 rounded-lg hover:shadow-2xl group">
                   <div className="bg-black w-full h-2 rounded-t-lg group-hover:bg-amber-600"></div>
                   <div className="p-3">
-                    <div className="capitalize text-xs mb-2 text-slate-500 flex items-center group-hover:text-amber-500 font-medium">
-                      <div className="p-1 text-inherit px-2 py-1 capitalize border-solid border-2 border-slate-500 rounded-lg inline group-hover:border-amber-500">
+                    <div className="capitalize text-xs mb-2 text-slate-500 flex items-center group-hover:text-amber-600 font-medium">
+                      <div className="p-1 text-inherit px-2 py-1 capitalize border-solid border-2 border-slate-500 rounded-lg inline group-hover:border-amber-600">
                         research article
                       </div>
                       <div className="grow"></div>

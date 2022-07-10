@@ -7,7 +7,6 @@ const Indicator: React.ComponentType<IndicatorProps> = (props) => {
   const [dimension, setDimension] = React.useState(props.dotDimension)
 
   React.useEffect(() => setDimension(props.dotDimension), [props.dotDimension])
-
   React.useEffect(() => setIdx(props.activeIndex), [props.activeIndex])
 
   const handleClick = (i: number) => () => props.setIndex(i)

@@ -65,3 +65,9 @@ export interface PayloadArgument {
   nChildren: number;
   infinite: boolean;
 }
+
+export interface TransitionEndPayload {
+  slideNo: number;
+    nChildren: number;
+    clone: number;
+}

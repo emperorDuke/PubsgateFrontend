@@ -1,11 +1,12 @@
 import React from 'react'
-import { gql, useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client'
 import { Formik } from 'formik'
 import { NextPage } from 'next'
 import * as yup from 'yup'
 import Button from '../components/Button'
 import Input from '../components/Input'
 import { PASSWORD_REGEX } from '../utils'
+import { CREATE_USER } from '../graphql/mutations/createUser'
 
 interface InitialValues {
   [key: string]: string
@@ -71,50 +72,22 @@ const inputType: InitialValues = {
   state: 'text',
 }
 
-const CREATE_USER = gql`
-  mutation CreateAuthorAndLogin(
-    $firstName: String!
-    $lastName: String!
-    $email: String!
-    $password: String!
-    $country: String!
-    $state: String!
-  ) {
-    createUser(
-      firstName: $firstName
-      lastName: $lastName
-      email: $email
-      password: $password
-      country: $country
-      state: $state
-    ) {
-      user {
-        firstName
-        lastName
-        email
-        country
-        state
-      }
-      accessToken
-      refreshToken
-    }
-  }
-`
-
 const SignUp: NextPage = () => {
   const [createUser, { loading, error }] = useMutation(CREATE_USER)
 
-  const handleSubmit = (value: InitialValues) => {
-    createUser({
-      variables: {
-        firstName: value.firstName,
-        lastName: value.lastName,
-        email: value.email,
-        password: value.password,
-        country: value.country,
-        state: value.state,
-      },
-    })
+  const handleSubmit = async (value: InitialValues) => {
+    try {
+      await createUser({
+        variables: {
+          firstName: value.firstName,
+          lastName: value.lastName,
+          email: value.email,
+          password: value.password,
+          country: value.country,
+          state: value.state,
+        },
+      })
+    } catch (e) {}
   }
 
   return (

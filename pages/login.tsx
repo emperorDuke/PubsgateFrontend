@@ -1,10 +1,13 @@
 import React from 'react'
-import { gql, useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client'
 import { Formik } from 'formik'
 import { NextPage } from 'next'
 import * as yup from 'yup'
 import Button from '../components/Button'
 import Input from '../components/Input'
+import { LOGIN_USER } from '../graphql/mutations/loginUser'
+import { setCookie } from 'cookies-next'
+import { GET_AUTH_USER } from '../graphql/queries/getAuthUser'
 
 interface LoginValue {
   [key: string]: string
@@ -30,34 +33,25 @@ const inputType: LoginValue = {
   password: 'password',
 }
 
-const LOGIN_USER = gql`
-  mutation LoginUser($email: String!, $password: String!) {
-    tokenAuth(email: $email, password: $password) {
-      token
-      refreshToken
-    }
-  }
-`
-
-const GET_AUTH_USER = gql`
-  query GetAuthUser {
-    user {
-      firstName
-      lastName
-      email
-      country
-      state
-    }
-  }
-`
-
 const Login: NextPage = () => {
-  const [loginUser, { loading, error }] = useMutation(LOGIN_USER, {
+  const [loginUser, { data, loading, error }] = useMutation(LOGIN_USER, {
     refetchQueries: [{ query: GET_AUTH_USER }],
   })
 
+  React.useEffect(() => {
+    if (!data) return
+
+    setCookie('auth-token', data.tokenAuth.token, {
+      maxAge: 60 * 60 * 24,
+    })
+
+    setCookie('refresh-token', data.tokenAuth.refreshToken, {
+      maxAge: 60 * 60 * 24 * 7,
+    })
+  }, [data])
+
   const handleSubmit = (values: LoginValue) => {
-    loginUser({ variables: values })
+    loginUser({ variables: values }).catch(() => {})
   }
 
   return (
@@ -66,7 +60,7 @@ const Login: NextPage = () => {
         <div className="grid grid-cols-6">
           <div className="col-start-1 col-span-6 md:col-start-3 md:col-span-2 p-6">
             {error && (
-              <span className="block h-4 mb-3 text-xs capitalize text-red-500 p-1">
+              <span className="block h-4 mb-3 text-md capitalize text-red-500 pb-6">
                 {error.message}
               </span>
             )}
@@ -93,11 +87,7 @@ const Login: NextPage = () => {
                       key={key}
                     />
                   ))}
-                  <Button
-                    type="submit"
-                    fullWidth
-                    disabled={formik.isSubmitting}
-                  >
+                  <Button type="submit" fullWidth>
                     {loading ? 'loading' : 'submit'}
                   </Button>
                 </form>

@@ -14,25 +14,14 @@ const Button: React.ComponentType<ButtonProps> = (props) => {
     ...rest
   } = props
 
-  const classes = [
-    'border-solid border-2 px-3 py-2 uppercase flex flex-nowrap items-center',
-  ]
-
-  if (variant === 'contained') {
-    classes.push(
-      'bg-amber-600 shadow-xl border-transparent rounded-lg hover:bg-amber-700/80 active:border-amber-500 text-white',
-    )
-  }
-
-  if (link) {
-    classes.push(
-      'border-transparent rounded-lg bg-black text-white hover:bg-slate-500 hover:text-white active:text-amber-500',
-    )
-  }
-
   const styleClass = clsx(
-    classes,
+    'border-solid border-2 px-3 py-2 uppercase flex flex-nowrap items-center',
     {
+      'bg-amber-600 shadow-xl border-transparent': variant === 'contained',
+      'rounded-lg text-white': variant === 'contained',
+      'hover:bg-amber-700/80 active:border-amber-500': variant === 'contained',
+      'border-transparent rounded-lg bg-black text-white': link,
+      'hover:bg-slate-500 hover:text-white active:text-amber-500': link,
       'w-full flex justify-center': fullWidth,
       'border-transparent': variant === 'icon',
       'rounded-full hover:bg-amber-600/20': variant === 'icon',

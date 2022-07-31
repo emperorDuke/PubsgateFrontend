@@ -8,6 +8,7 @@ import Input from '../components/Input'
 import { LOGIN_USER } from '../graphql/mutations/loginUser'
 import { setCookie } from 'cookies-next'
 import { GET_AUTH_USER } from '../graphql/queries/getAuthUser'
+import { useRouter } from 'next/router'
 
 interface LoginValue {
   [key: string]: string
@@ -38,6 +39,8 @@ const Login: NextPage = () => {
     refetchQueries: [{ query: GET_AUTH_USER }],
   })
 
+  const router = useRouter()
+
   React.useEffect(() => {
     if (!data) return
 
@@ -48,7 +51,9 @@ const Login: NextPage = () => {
     setCookie('refresh-token', data.tokenAuth.refreshToken, {
       maxAge: 60 * 60 * 24 * 7,
     })
-  }, [data])
+
+    router.push("/")
+  }, [data, router])
 
   const handleSubmit = (values: LoginValue) => {
     loginUser({ variables: values }).catch(() => {})

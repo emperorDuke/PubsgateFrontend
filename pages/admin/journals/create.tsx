@@ -3,12 +3,12 @@ import { useMutation } from '@apollo/client'
 import { Formik } from 'formik'
 import { NextPage } from 'next'
 import * as yup from 'yup'
-import Button from '../../components/Button'
-import Input from '../../components/Input'
-import { CREATE_JOURNAL } from '../../graphql/mutations/createJournal'
-import client from '../../apollo-client'
-import { GET_SUBJECT_DISCIPLINES } from '../../graphql/queries/getSubjectDisciplines'
-import Select from '../../components/Select'
+import Button from '../../../components/Button'
+import Input from '../../../components/Input'
+import { CREATE_JOURNAL } from '../../../graphql/mutations/createJournal'
+import client from '../../../server-apollo-client'
+import { GET_SUBJECT_DISCIPLINES } from '../../../graphql/queries/getSubjectDisciplines'
+import Select from '../../../components/Select'
 import { useRouter } from 'next/router'
 
 interface InitialValues {
@@ -35,7 +35,7 @@ const CreateJournalManager: NextPage<Props> = (props) => {
 
     const journal = data.createJournal.journal
 
-    router.push(`/journals/${journal.id}/transfer`)
+    router.push(`/admin/journals/${journal.id}/editor`)
   }, [data, router])
 
   const initialValues: InitialValues = {
@@ -145,7 +145,7 @@ const CreateJournalManager: NextPage<Props> = (props) => {
 }
 
 export const getServerSideProps = async (): Promise<{ props: Props }> => {
-  const { data } = await client.query({
+  const { data } = await client().query({
     query: GET_SUBJECT_DISCIPLINES,
   })
 

@@ -1,14 +1,22 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import clsx from 'classNames'
-import { ShoppingCartIcon, MenuIcon } from '@heroicons/react/solid'
+import {
+  ShoppingCartIcon,
+  MenuIcon,
+  ChevronDownIcon,
+} from '@heroicons/react/solid'
 import SideNav from '../SideNav'
 import Button from '../Button'
 import NavBar from '../NavBar'
 import { NavBarProps } from '../NavBar/@types'
 import { useTheme } from '../../utils/hooks'
-import { useQuery } from '@apollo/client'
+import { useMutation, useLazyQuery, useReactiveVar } from '@apollo/client'
 import { GET_AUTH_USER } from '../../graphql/queries/getAuthUser'
+import { Menu } from '@headlessui/react'
+import { LOGOUT_USER } from '../../graphql/mutations/logoutUser'
+import { deleteCookie, getCookie } from 'cookies-next'
+import { isLoggedInVar } from '../../cache'
 
 const navigations: NavBarProps['navigations'] = [
   {
@@ -56,8 +64,35 @@ const navigations: NavBarProps['navigations'] = [
 
 const Header: React.ComponentType = () => {
   const [openSideNav, setSideNav] = useState(false)
-  const { data } = useQuery(GET_AUTH_USER)
+  const [logoutUser, { data: logoutData }] = useMutation(LOGOUT_USER)
+  const [getUser, { data: authData }] = useLazyQuery(GET_AUTH_USER)
+  const auth = useReactiveVar(isLoggedInVar)
   const theme = useTheme('light')
+
+  React.useEffect(() => {
+    if (!logoutData) return
+
+    deleteCookie('refresh-token')
+    deleteCookie('auth-token')
+    isLoggedInVar({
+      isLoggedIn: false,
+      token: '',
+    })
+  }, [logoutData])
+
+  React.useEffect(() => {
+    const getUserBio = async () => {
+      if (auth.isLoggedIn && auth.token) {
+        await getUser({
+          variables: {
+            token: auth.token,
+          },
+        })
+      }
+    }
+
+    getUserBio()
+  }, [auth, getUser])
 
   const handleCloseNav = () => {
     setSideNav(false)
@@ -65,6 +100,14 @@ const Header: React.ComponentType = () => {
 
   const toggleSideNav = () => {
     setSideNav(!openSideNav)
+  }
+
+  const logout = async () => {
+    await logoutUser({
+      variables: {
+        refreshToken: getCookie('refresh-token'),
+      },
+    })
   }
 
   return (
@@ -85,12 +128,23 @@ const Header: React.ComponentType = () => {
         <h5 className="text-3xl md:text-4xl font-serif text-white">Pubsgate</h5>
         <div className="grow"></div>
         <div className="flex space-x-4 md:space-x-20">
-          {data ? (
-            <div className="p-2">
-              <span className="text-white text-lg capitalize">
-                {`${data.loggedInUser.firstName} ${data.loggedInUser.lastName}`}
-              </span>
-            </div>
+          {authData && auth.isLoggedIn ? (
+            <Menu as="div" className="p-2">
+              <Menu.Button className="text-white text-lg capitalize border-solid border-2 border-white px-3 py-2 rounded-lg flex flex-nowrap justify-center items-center">
+                {`${authData.loggedInUser.firstName} ${authData.loggedInUser.lastName}`}
+                <ChevronDownIcon className="ml-2 h-5 w-5 text-inherit" />
+              </Menu.Button>
+              <Menu.Items
+                as="section"
+                className="absolute bg-white p-2 flex flex-col w-40 mt-2 rounded-lg drop-shadow-xl shadow-xl z-50"
+              >
+                <Menu.Item>
+                  <Button onClick={logout} fullWidth variant="outlined">
+                    Log out
+                  </Button>
+                </Menu.Item>
+              </Menu.Items>
+            </Menu>
           ) : (
             <div className="flex items-center">
               <Link href="/login">
@@ -109,7 +163,7 @@ const Header: React.ComponentType = () => {
             </div>
           )}
           <Link href="/">
-            <a className="flex items-center justify-center md:bg-black rounded-lg text-white md:text-white py-2 px-3 text-base md:text-lg hover:text-slate-500 hover:md:bg-slate-500 hover:md:text-white active:text-amber-500">
+            <a className="flex items-center justify-center md:bg-black rounded-lg text-white md:text-white py-2 px-3 text-base md:text-lg hover:text-slate-500 hover:md:bg-slate-500 hover:md:text-white active:text-amber-500 border-solid border-transparent border-2">
               <ShoppingCartIcon className="h-6 w-6 md:mr-3" />
               <span className="hidden md:inline">Cart</span>
             </a>

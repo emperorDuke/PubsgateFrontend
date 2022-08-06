@@ -9,69 +9,9 @@ import { ArrowRightIcon, KeyIcon } from '@heroicons/react/solid'
 import Button from '../components/Button'
 import Carousel from '../components/Carousel'
 import CarouselItem from '../components/CarouselItem'
-
-const subjects = [
-  {
-    id: '1',
-    label: 'arts',
-    link: '/',
-  },
-  {
-    id: '2',
-    label: 'life sciences',
-    link: '/',
-  },
-  {
-    id: '3',
-    label: 'engineering',
-    link: '/',
-  },
-  {
-    id: '4',
-    label: 'social sciences',
-    link: '/',
-  },
-  {
-    id: '5',
-    label: 'Education',
-    link: '/',
-  },
-  {
-    id: '6',
-    label: 'Agricultural sciences',
-    link: '/',
-  },
-  {
-    id: 7,
-    label: 'Chemistry',
-    link: '/',
-  },
-  {
-    id: 8,
-    label: 'Physics',
-    link: '/',
-  },
-  {
-    id: 9,
-    label: 'Architecture and Building',
-    link: '/',
-  },
-  {
-    id: 10,
-    label: 'Management sciences',
-    link: '/',
-  },
-  {
-    id: 11,
-    label: 'Phamaceutical sciences',
-    link: '/',
-  },
-  {
-    id: 12,
-    label: 'Basic medical sciences',
-    link: '/',
-  },
-]
+import { GET_SUBJECT_DISCIPLINES } from '../graphql/queries/getSubjectDisciplines'
+import client from '../server-apollo-client'
+import { SubjectDiscipline } from '../@globalTypes'
 
 const resources = [
   {
@@ -133,7 +73,21 @@ const articles = [
   },
 ]
 
-const Home: NextPage = () => {
+interface Props {
+  subjectDisciplines: SubjectDiscipline[]
+}
+
+const Home: NextPage<Props> = (props) => {
+  const [subjects, setSubject] = React.useState(props.subjectDisciplines)
+  React.useEffect(() => {
+    setSubject(
+      props.subjectDisciplines.map((s) => ({
+        ...s,
+        slug: s.name.split(' ').join('-'),
+      })),
+    )
+  }, [props.subjectDisciplines])
+
   return (
     <main>
       <Head>
@@ -302,3 +256,11 @@ const Home: NextPage = () => {
 }
 
 export default Home
+
+export const getServerSideProps = async (): Promise<{ props: Props }> => {
+  const { data } = await client().query({
+    query: GET_SUBJECT_DISCIPLINES,
+  })
+
+  return { props: { subjectDisciplines: data.subjectDisciplines } }
+}

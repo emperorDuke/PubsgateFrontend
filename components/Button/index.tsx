@@ -3,9 +3,12 @@ import React from 'react'
 import { ButtonProps } from './@types'
 import clsx from 'classNames'
 
-const Button: React.ComponentType<ButtonProps> = (props) => {
+const Button: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonProps> = (
+  props,
+  ref,
+) => {
   const {
-    variant,
+    variant = 'contained',
     fullWidth,
     leftIcon,
     rightIcon,
@@ -22,10 +25,12 @@ const Button: React.ComponentType<ButtonProps> = (props) => {
       'hover:bg-amber-700/80 active:border-amber-500': variant === 'contained',
       'border-transparent rounded-lg bg-black text-white': link,
       'hover:bg-slate-500 hover:text-white active:text-amber-500': link,
-      'w-full flex justify-center': fullWidth,
+      'w-full justify-center': fullWidth,
       'border-transparent': variant === 'icon',
       'rounded-full hover:bg-amber-600/20': variant === 'icon',
       'active:border-amber-500': variant === 'icon',
+      'border-amber-600 rounded-lg text-amber-600': variant === 'outlined',
+      'hover:border-amber-500 hover:text-amber-500': variant === 'outlined',
     },
     props.className,
   )
@@ -43,14 +48,10 @@ const Button: React.ComponentType<ButtonProps> = (props) => {
       <a className={styleClass}>{childrenWithIcon}</a>
     </Link>
   ) : (
-    <button {...rest} className={styleClass}>
+    <button {...rest} className={styleClass} ref={ref}>
       {childrenWithIcon}
     </button>
   )
 }
 
-Button.defaultProps = {
-  variant: 'contained',
-}
-
-export default Button
+export default React.forwardRef(Button)

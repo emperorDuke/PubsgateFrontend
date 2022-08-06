@@ -52,7 +52,7 @@ const CreateEditorPage: NextPage = () => {
     const journalId = router.query.pid
     const editor = data.adminCreateEditor.editor
 
-    router.push(`/admin/journals/${journalId}/transfer?editorId=${editor.id}`)
+    router.push(`/admin/journal/${journalId}/transfer?editorId=${editor.id}`)
   }, [data, router])
 
   const handleSubmit = async (value: InitialValues) => {

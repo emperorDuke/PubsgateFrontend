@@ -11,3 +11,10 @@ export interface User {
   lastName: string
   email: string
 }
+
+export interface SubjectDiscipline {
+  __typename: string
+  id: number | string
+  name: string
+  slug: string
+}

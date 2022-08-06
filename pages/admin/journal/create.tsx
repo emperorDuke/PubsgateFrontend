@@ -10,6 +10,7 @@ import client from '../../../server-apollo-client'
 import { GET_SUBJECT_DISCIPLINES } from '../../../graphql/queries/getSubjectDisciplines'
 import Select from '../../../components/Select'
 import { useRouter } from 'next/router'
+import { SubjectDiscipline } from '../../../@globalTypes'
 
 interface InitialValues {
   [key: string]: string
@@ -19,11 +20,7 @@ interface InitialValues {
 }
 
 interface Props {
-  subjectDisciplines: Array<{
-    __typename: string
-    id: number | string
-    name: string
-  }>
+  subjectDisciplines: SubjectDiscipline[]
 }
 
 const CreateJournalManager: NextPage<Props> = (props) => {
@@ -35,7 +32,7 @@ const CreateJournalManager: NextPage<Props> = (props) => {
 
     const journal = data.createJournal.journal
 
-    router.push(`/admin/journals/${journal.id}/editor`)
+    router.push(`/admin/journal/${journal.id}/editor`)
   }, [data, router])
 
   const initialValues: InitialValues = {

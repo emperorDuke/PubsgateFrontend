@@ -7,8 +7,8 @@ import Button from '../components/Button'
 import Input from '../components/Input'
 import { LOGIN_USER } from '../graphql/mutations/loginUser'
 import { setCookie } from 'cookies-next'
-import { GET_AUTH_USER } from '../graphql/queries/getAuthUser'
 import { useRouter } from 'next/router'
+import { isLoggedInVar } from '../cache'
 
 interface LoginValue {
   [key: string]: string
@@ -35,9 +35,7 @@ const inputType: LoginValue = {
 }
 
 const Login: NextPage = () => {
-  const [loginUser, { data, loading, error }] = useMutation(LOGIN_USER, {
-    refetchQueries: [{ query: GET_AUTH_USER }],
-  })
+  const [loginUser, { data, loading, error }] = useMutation(LOGIN_USER)
 
   const router = useRouter()
 
@@ -52,7 +50,12 @@ const Login: NextPage = () => {
       maxAge: 60 * 60 * 24 * 7,
     })
 
-    router.push("/")
+    isLoggedInVar({
+      isLoggedIn: true,
+      token: data.tokenAuth.token,
+    })
+
+    router.push('/')
   }, [data, router])
 
   const handleSubmit = (values: LoginValue) => {

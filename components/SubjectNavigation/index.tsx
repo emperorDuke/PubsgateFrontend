@@ -12,9 +12,9 @@ const SubjectNavigation: React.ComponentType<SubjectNavigationProps> = (
           key={subject.id}
           className="bg-slate-200 first:rounded-t-lg last:rounded-b-lg flex hover:bg-amber-600"
         >
-          <Link href={subject.link}>
+          <Link href={`/journals?subject=${subject.slug}`}>
             <a className="p-3 capitalize text-md md:text-lg w-full hover:underline hover:text-white font-medium">
-              {subject.label}
+              {subject.name}
             </a>
           </Link>
         </li>

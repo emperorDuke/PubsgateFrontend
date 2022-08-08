@@ -2,7 +2,7 @@ import React from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import SeachBar from '../components/SearchBar'
+import SearchBar from '../components/SearchBar'
 import SubjectNavigation from '../components/SubjectNavigation'
 import Link from 'next/link'
 import { ArrowRightIcon, KeyIcon } from '@heroicons/react/solid'
@@ -78,16 +78,6 @@ interface Props {
 }
 
 const Home: NextPage<Props> = (props) => {
-  const [subjects, setSubject] = React.useState(props.subjectDisciplines)
-  React.useEffect(() => {
-    setSubject(
-      props.subjectDisciplines.map((s) => ({
-        ...s,
-        slug: s.name.split(' ').join('-'),
-      })),
-    )
-  }, [props.subjectDisciplines])
-
   return (
     <main>
       <Head>
@@ -102,7 +92,7 @@ const Home: NextPage<Props> = (props) => {
               <h5 className="mb-2 text-white text-2xl font-bold block">
                 Search for Articles:
               </h5>
-              <SeachBar />
+              <SearchBar />
             </div>
           </div>
         </div>
@@ -120,7 +110,7 @@ const Home: NextPage<Props> = (props) => {
               Explore by subject disciplines
             </h2>
             <div className="rounded-xl">
-              <SubjectNavigation subjects={subjects} />
+              <SubjectNavigation subjects={props.subjectDisciplines} />
             </div>
           </div>
           <div className="col-span-3 w-full">

@@ -7,6 +7,7 @@ import Button from '../components/Button'
 import Input from '../components/Input'
 import { PASSWORD_REGEX } from '../utils'
 import { CREATE_USER } from '../graphql/mutations/createUser'
+import Head from 'next/head'
 
 interface InitialValues {
   [key: string]: string
@@ -92,11 +93,16 @@ const SignUp: NextPage = () => {
 
   return (
     <main>
+      <Head>
+        <title>Author registration | Pubsgate</title>
+        <meta name="description" content="create author account" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div className="container mx-auto">
         <div className="grid grid-cols-6">
           <div className="col-start-1 col-span-6 md:col-start-3 md:col-span-2 p-6">
             <span>{error && error.message}</span>
-            <h1 className="text-2xl font-bold mb-6">Registration</h1>
+            <h1 className="text-2xl font-bold mb-6">Author Registration</h1>
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}

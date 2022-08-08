@@ -31,6 +31,7 @@ const Select: React.ComponentType<SelectProps> = (props) => {
           'focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500',
           'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200',
           { 'border-red-500 focus:ring-pink-500': !!errorMessage },
+          props.className,
         )}
       >
         {props.items &&

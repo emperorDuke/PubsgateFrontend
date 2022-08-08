@@ -9,6 +9,7 @@ import { LOGIN_USER } from '../graphql/mutations/loginUser'
 import { setCookie } from 'cookies-next'
 import { useRouter } from 'next/router'
 import { isLoggedInVar } from '../cache'
+import Head from 'next/head'
 
 interface LoginValue {
   [key: string]: string
@@ -64,6 +65,11 @@ const Login: NextPage = () => {
 
   return (
     <main>
+      <Head>
+        <title>Author login | Pubsgate</title>
+        <meta name="description" content="log in author account" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div className="container mx-auto">
         <div className="grid grid-cols-6">
           <div className="col-start-1 col-span-6 md:col-start-3 md:col-span-2 p-6">
@@ -72,7 +78,7 @@ const Login: NextPage = () => {
                 {error.message}
               </span>
             )}
-            <h1 className="text-2xl font-bold mb-6">Login</h1>
+            <h1 className="text-2xl font-bold mb-6">Author login</h1>
             <Formik
               validationSchema={validationSchema}
               initialValues={initialValues}

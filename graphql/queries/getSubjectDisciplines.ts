@@ -5,6 +5,7 @@ export const GET_SUBJECT_DISCIPLINES = gql`
     subjectDisciplines {
       id
       name
+      slug
     }
   }
 `

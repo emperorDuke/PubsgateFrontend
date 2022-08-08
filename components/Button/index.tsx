@@ -30,7 +30,7 @@ const Button: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonProps> = (
       'rounded-full hover:bg-amber-600/20': variant === 'icon',
       'active:border-amber-500': variant === 'icon',
       'border-amber-600 rounded-lg text-amber-600': variant === 'outlined',
-      'hover:border-amber-500 hover:text-amber-500': variant === 'outlined',
+      'hover:bg-amber-500/10': variant === 'outlined',
     },
     props.className,
   )

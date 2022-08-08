@@ -130,7 +130,7 @@ const Header: React.ComponentType = () => {
         <div className="flex space-x-4 md:space-x-20">
           {authData && auth.isLoggedIn ? (
             <Menu as="div" className="p-2">
-              <Menu.Button className="text-white text-lg capitalize border-solid border-2 border-white px-3 py-2 rounded-lg flex flex-nowrap justify-center items-center">
+              <Menu.Button className="text-white text-lg capitalize border-solid border-2 border-white px-3 py-1 rounded-lg flex flex-nowrap justify-center items-center hover:border-slate-200 hover:text-slate-200 active:border-amber-300">
                 {`${authData.loggedInUser.firstName} ${authData.loggedInUser.lastName}`}
                 <ChevronDownIcon className="ml-2 h-5 w-5 text-inherit" />
               </Menu.Button>

@@ -23,8 +23,15 @@ interface Props {
 }
 
 const TransferControlPage: NextPage<Props> = (props) => {
-  const [transferControl, { loading, error }] = useMutation(TRANSFER_JOURNAL)
+  const [transferControl, { data, loading, error }] = useMutation(
+    TRANSFER_JOURNAL,
+  )
   const router = useRouter()
+
+  React.useEffect(() => {
+    if (!data) return
+    router.push('/')
+  }, [data, router])
 
   const initialValues: InitialValues = {
     affiliation: props.editor.affiliation,

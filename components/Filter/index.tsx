@@ -37,28 +37,31 @@ const articleAccess = [
 
 const Filter: React.ComponentType<FilterProps> = (props) => {
   return (
-    <div className="rounded-[inherit]">
-      <section className="flex p-3 bg-black rounded-t-[inherit]">
-        <h1 className="text-lg font-bold text-white flex flex-nowrap items-center">
-          <FilterIcon className="w-5 h-5 mr-3" />
+    <div>
+      <section className="flex mb-3 md:mb-6">
+        <h1 className="text-xl md:text-2xl font-bold flex flex-nowrap items-center text-slate-600">
+          <FilterIcon className="w-6 h-6 mr-3" />
           Filters
         </h1>
 
         <div className="grow"></div>
-        <Button
-          variant="icon"
-          onClick={props.onClose}
-          className="hover:border-slate-500"
-        >
-          <XIcon className="w-5 h-5 text-white" />
-        </Button>
+
+        {props.dismissable ? (
+          <Button variant="icon" onClick={props.onClose}>
+            <XIcon className="w-6 h-6" />
+          </Button>
+        ) : (
+          <div className="h-10 w-5 block" />
+        )}
       </section>
 
-      <section className="p-3">
-        <Menu>
+      {props.dismissable && <hr className="my-3 bg-gray-300 h" />}
+
+      <section className="p-3 bg-slate-200 rounded-lg space-y-3 border border-solid border-gray-300">
+        <Menu as="div">
           {({ open }) => (
             <React.Fragment>
-              <Menu.Button className="text-base font-semibold text-slate-600 flex items-center justify-center pl-1 mb-3 hover:underline">
+              <Menu.Button className="text-base md:text-lg font-semibold text-slate-600 flex items-center justify-center pl-1 mb-3 hover:underline">
                 <span>Article type</span>
                 <ChevronDownIcon
                   className={clsx(
@@ -69,8 +72,8 @@ const Filter: React.ComponentType<FilterProps> = (props) => {
                   )}
                 />
               </Menu.Button>
-              <Menu.Items>
-                <Menu.Item disabled>
+              <Menu.Items static>
+                <Menu.Item>
                   <form>
                     {articleTypes.map((type) => (
                       <div
@@ -81,9 +84,13 @@ const Filter: React.ComponentType<FilterProps> = (props) => {
                           type="checkbox"
                           value=""
                           name={type.label}
-                          className="w-5 h-5 accent-amber-600 hover:cursor-pointer"
+                          id={type.label}
+                          className="w-5 h-5 accent-primary hover:cursor-pointer"
                         />
-                        <label htmlFor="article" className="ml-3 text-base">
+                        <label
+                          htmlFor="article"
+                          className="ml-3 text-base capitalize"
+                        >
                           {type.label}
                         </label>
                       </div>
@@ -95,10 +102,10 @@ const Filter: React.ComponentType<FilterProps> = (props) => {
           )}
         </Menu>
 
-        <Menu>
+        <Menu as="div">
           {({ open }) => (
             <React.Fragment>
-              <Menu.Button className="text-base font-semibold text-slate-600 flex items-center justify-center pl-1 mb-3 hover:underline">
+              <Menu.Button className="text-base md:text-lg font-semibold text-slate-600 flex items-center justify-center pl-1 mb-3 hover:underline">
                 <span>Article Access</span>
                 <ChevronDownIcon
                   className={clsx(
@@ -109,8 +116,8 @@ const Filter: React.ComponentType<FilterProps> = (props) => {
                   )}
                 />
               </Menu.Button>
-              <Menu.Items>
-                <Menu.Item disabled>
+              <Menu.Items static>
+                <Menu.Item>
                   <form>
                     {articleAccess.map((type) => (
                       <div
@@ -121,9 +128,13 @@ const Filter: React.ComponentType<FilterProps> = (props) => {
                           type="checkbox"
                           value=""
                           name={type.label}
-                          className="w-5 h-5 accent-amber-600 hover:cursor-pointer"
+                          id={type.label}
+                          className="w-5 h-5 accent-primary hover:cursor-pointer"
                         />
-                        <label htmlFor="article" className="ml-3 text-base">
+                        <label
+                          htmlFor={type.label}
+                          className="ml-3 text-base capitalize"
+                        >
                           {type.label}
                         </label>
                       </div>
@@ -137,6 +148,10 @@ const Filter: React.ComponentType<FilterProps> = (props) => {
       </section>
     </div>
   )
+}
+
+Filter.defaultProps = {
+  dismissable: false,
 }
 
 export default Filter

@@ -8,7 +8,6 @@ const SearchBar: React.ComponentType<SearchBarProps> = (props) => {
   const styles = {
     'bg-white': props.variant === 'outlined',
     'bg-slate-200': props.variant === 'contained',
-    'border-y-2 border-y-slate-400': props.variant === 'outlined',
   }
 
   return (
@@ -17,10 +16,11 @@ const SearchBar: React.ComponentType<SearchBarProps> = (props) => {
         className={clsx(
           'mb-2 md:mb-0 py-1 rounded-lg',
           'md:rounded-none md:rounded-l-lg',
+          'border-r border-r-gray-300',
+          'md:border-r-transparent',
+          'border-y border-y-gray-300',
+          'border-l border-l-gray-300',
           styles,
-          {
-            'border-l-2 border-l-slate-400': props.variant === 'outlined',
-          },
         )}
       >
         <select className="bg-inherit w-full md:w-48 pl-2 rounded-[inherit] h-11 md:h-12">
@@ -29,9 +29,11 @@ const SearchBar: React.ComponentType<SearchBarProps> = (props) => {
       </div>
       <div
         className={clsx(
+          'border-x border-x-gray-300',
           'md:border-x-solid md:border-x-2',
           'md:border-x-slate-500 mb-2 md:mb-0 flex',
           'py-1 pr-1 rounded-lg md:rounded-none',
+          'border-y border-y-gray-300',
           styles,
         )}
       >
@@ -49,17 +51,18 @@ const SearchBar: React.ComponentType<SearchBarProps> = (props) => {
         className={clsx(
           'mb-2 rounded-lg md:mb-0 py-1',
           'md:rounded-none md:rounded-r-lg',
+          'border-l border-l-gray-300',
+          'md:border-l-transparent',
+          'border-y border-y-gray-300',
+          'border-r border-r-gray-300',
           styles,
-          {
-            'border-r-2 border-r-slate-400': props.variant === 'outlined',
-          },
         )}
       >
         <select className="bg-inherit rounded-[inherit] h-11 md:h-12 pl-2 w-full md:w-48">
           <option value="">All Articles</option>
         </select>
       </div>
-      <div className="md:ml-5 w-full md:mb-0 mt-3 md:mt-0">
+      <div className="md:ml-3 w-full md:mb-0 mt-3 md:mt-0">
         <Button
           className={clsx('h-full', { 'shadow-none': props.depressSearchBtn })}
           leftIcon={<SearchIcon className="w-5 h-5" />}

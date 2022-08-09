@@ -10,7 +10,6 @@ import SideNav from '../SideNav'
 import Button from '../Button'
 import NavBar from '../NavBar'
 import { NavBarProps } from '../NavBar/@types'
-import { useTheme } from '../../utils/hooks'
 import { useMutation, useLazyQuery, useReactiveVar } from '@apollo/client'
 import { GET_AUTH_USER } from '../../graphql/queries/getAuthUser'
 import { Menu } from '@headlessui/react'
@@ -67,7 +66,6 @@ const Header: React.ComponentType = () => {
   const [logoutUser, { data: logoutData }] = useMutation(LOGOUT_USER)
   const [getUser, { data: authData }] = useLazyQuery(GET_AUTH_USER)
   const auth = useReactiveVar(isLoggedInVar)
-  const theme = useTheme('light')
 
   React.useEffect(() => {
     if (!logoutData) return
@@ -111,7 +109,7 @@ const Header: React.ComponentType = () => {
   }
 
   return (
-    <header className={clsx(`bg-${theme.color.primary}`, 'w:full')}>
+    <header className={clsx(`bg-primary`, 'w:full')}>
       <SideNav
         open={openSideNav}
         onClose={handleCloseNav}
@@ -130,7 +128,7 @@ const Header: React.ComponentType = () => {
         <div className="flex space-x-4 md:space-x-20">
           {authData && auth.isLoggedIn ? (
             <Menu as="div" className="p-2">
-              <Menu.Button className="text-white text-lg capitalize border-solid border-2 border-white px-3 py-1 rounded-lg flex flex-nowrap justify-center items-center hover:border-slate-200 hover:text-slate-200 active:border-amber-300">
+              <Menu.Button className="text-white text-lg capitalize border-solid border-2 border-white px-3 py-1 rounded-lg flex flex-nowrap justify-center items-center hover:border-slate-200 hover:text-slate-200 active:border-primary-light/20">
                 {`${authData.loggedInUser.firstName} ${authData.loggedInUser.lastName}`}
                 <ChevronDownIcon className="ml-2 h-5 w-5 text-inherit" />
               </Menu.Button>
@@ -163,7 +161,7 @@ const Header: React.ComponentType = () => {
             </div>
           )}
           <Link href="/">
-            <a className="flex items-center justify-center md:bg-black rounded-lg text-white md:text-white py-2 px-3 text-base md:text-lg hover:text-slate-500 hover:md:bg-slate-500 hover:md:text-white active:text-amber-500 border-solid border-transparent border-2">
+            <a className="flex items-center justify-center md:bg-black rounded-lg text-white md:text-white py-2 px-3 text-base md:text-lg hover:text-slate-500 hover:md:bg-slate-500 hover:md:text-white active:text-primary-light border-solid border-transparent border-2">
               <ShoppingCartIcon className="h-6 w-6 md:mr-3" />
               <span className="hidden md:inline">Cart</span>
             </a>

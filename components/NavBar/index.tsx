@@ -7,14 +7,14 @@ import clsx from 'classNames'
 
 const NavBar: React.ComponentType<NavBarProps> = (props) => {
   return (
-    <nav className="w-full bg-amber-700 hidden md:block">
-      <div className="container mx-auto flex flex-nowrap items-center space-x-4 py-2">
+    <nav className="w-full bg-primary-dark hidden md:block">
+      <div className="container mx-auto flex flex-nowrap items-center space-x-3 py-2">
         {props.navigations.map((nav) =>
           nav.options && nav.options.length ? (
             <Menu as="div" key={nav.label}>
               {({ open }) => (
                 <>
-                  <Menu.Button className="bg-white text-slate-600 py-1 px-2 rounded-lg capitalize flex flex-nowrap items-center border-solid border-2 border-transparent active:border-amber-500 hover:bg-amber-100/80 hover:text-white">
+                  <Menu.Button className="bg-white text-slate-600 py-1 px-2 rounded-lg capitalize flex flex-nowrap items-center border-solid border border-transparent active:border-primary-light hover:underline">
                     <span className="px-1 text-inherit">{nav.label}</span>
                     <ChevronDownIcon
                       className={clsx(
@@ -37,7 +37,7 @@ const NavBar: React.ComponentType<NavBarProps> = (props) => {
                               <a
                                 className={clsx(
                                   { 'bg-red-500': active },
-                                  `p-3 capitalize text-slate-600 hover:bg-amber-100/80`,
+                                  `p-3 capitalize text-slate-600 hover:bg-primary-light/10`,
                                 )}
                               >
                                 {option.label}
@@ -53,7 +53,7 @@ const NavBar: React.ComponentType<NavBarProps> = (props) => {
             </Menu>
           ) : (
             <Link href={nav.link as string} key={nav.label}>
-              <a className="bg-white text-slate-600 py-1 px-2 rounded-lg capitalize flex flex-nowrap items-center border-solid border-2 border-transparent active:border-amber-500 hover:bg-amber-100/80 hover:text-white">
+              <a className="bg-white text-slate-600 py-1 px-2 rounded-lg capitalize flex flex-nowrap items-center border-solid border-2 border-transparent active:border-primary-light hover:underline">
                 {nav.label}
               </a>
             </Link>

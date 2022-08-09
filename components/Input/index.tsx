@@ -9,11 +9,12 @@ const Input: React.ComponentType<InputProps> = (props) => {
   }
 
   const inputProps = {
+    id: props.id || label,
     name: props.name || label,
   }
 
   const labelStyleClass = clsx(
-    'text-slate-600 capitalize block mb-3 font-semibold',
+    'text-slate-600 capitalize block mb-3 font-semibold sr-only',
     {
       "after:content-['*'] after:ml-1 after:text-red-500": required,
     },
@@ -28,7 +29,7 @@ const Input: React.ComponentType<InputProps> = (props) => {
         {...inputProps}
         {...rest}
         className={clsx(
-          'border-solid border-2 rounded-lg py-3 px-2 w-full',
+          'border-solid border rounded-lg py-3 px-2 w-full border-border-col',
           'active:border-sky-600 shadow-sm placeholder-slate-400',
           'focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500',
           'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200',

@@ -106,8 +106,8 @@ const Home: NextPage<Props> = (props) => {
       <div className="container mx-auto px-3">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-1 md:gap-6 mt-6">
           <div className=" col-span-2">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-600">
-              Explore by subject disciplines
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-600">
+              Explore by subjects
             </h2>
             <div className="rounded-xl">
               <SubjectNavigation subjects={props.subjectDisciplines} />
@@ -130,7 +130,7 @@ const Home: NextPage<Props> = (props) => {
                   <div className="bg-blue-500">p4444444444444</div>
                 </CarouselItem>
                 <CarouselItem>
-                  <div className="bg-amber-500">p4444444444444</div>
+                  <div className="bg-primary-light">p4444444444444</div>
                 </CarouselItem>
                 <CarouselItem>
                   <div className="relative">
@@ -152,7 +152,7 @@ const Home: NextPage<Props> = (props) => {
                     className="w-full shadow-xl border-solid border-x-2 border-b-2 rounded-lg"
                     key={resource.heading}
                   >
-                    <div className="bg-amber-600 w-full h-2 rounded-t-lg"></div>
+                    <div className="bg-primary w-full h-2 rounded-t-lg"></div>
                     <div className="p-3">
                       <h3 className="text-xl md:text-2xl text-slate-600 font-semibold mb-2">
                         {resource.heading}
@@ -178,23 +178,23 @@ const Home: NextPage<Props> = (props) => {
         </div>
         {/** Latest articles start */}
         <div className="mt-6">
-          <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-600">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-600">
             Recent articles
           </h2>
           <div className="grid grid-cols-5 gap-6">
             {articles.map((article, i) => (
               <Link href={article.link} key={i + 1}>
                 <a className="col-span-5 md:col-span-1 shadow-xl border-solid border-x-2 border-b-2 rounded-lg hover:shadow-2xl group">
-                  <div className="bg-black w-full h-2 rounded-t-lg group-hover:bg-amber-600"></div>
+                  <div className="bg-black w-full h-2 rounded-t-lg group-hover:bg-primary"></div>
                   <div className="p-3">
-                    <div className="capitalize text-xs mb-2 text-slate-500 flex items-center group-hover:text-amber-600 font-medium">
-                      <div className="p-1 text-inherit px-2 py-1 capitalize border-solid border-2 border-slate-500 rounded-lg inline group-hover:border-amber-600">
+                    <div className="capitalize text-xs mb-2 text-slate-500 flex items-center group-hover:text-primary font-medium">
+                      <div className="p-1 text-inherit px-2 py-1 capitalize border-solid border-2 border-slate-500 rounded-lg inline group-hover:border-primary">
                         research article
                       </div>
                       <div className="grow"></div>
                       <span>20 May 2020</span>
                     </div>
-                    <h3 className="text-lg font-semibold text-slate-700 mb-2 leading-snug group-hover:text-amber-600">
+                    <h3 className="text-lg font-semibold text-slate-700 mb-2 leading-snug group-hover:text-primary">
                       {article.title}
                     </h3>
                     <p className="text-slate-500 text-sm truncate py-2">
@@ -220,7 +220,7 @@ const Home: NextPage<Props> = (props) => {
         {/** latest articles end */}
 
         <div className="mt-6">
-          <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-600">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-600">
             News
           </h2>
           <div className="grid grid-cols-4 gap-6">

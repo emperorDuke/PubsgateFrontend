@@ -12,7 +12,7 @@ export interface User {
   email: string
 }
 
-export interface SubjectDiscipline {
+export interface Discipline {
   __typename: string
   id: number | string
   name: string

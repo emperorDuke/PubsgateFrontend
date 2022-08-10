@@ -3,7 +3,7 @@ import { SelectProps } from './@types'
 import clsx from 'classNames'
 
 const Select: React.ComponentType<SelectProps> = (props) => {
-  const { required, errorMessage, label, ...rest } = props
+  const { required, errorMessage, label, hideDetails, ...rest } = props
 
   const labelProps = {
     htmlFor: props.name || label,
@@ -14,7 +14,7 @@ const Select: React.ComponentType<SelectProps> = (props) => {
     name: props.name || label,
   }
 
-  const labelStyleClass = clsx('text-slate-600 capitalize block mb-3 sr-only', {
+  const labelStyleClass = clsx('text-slate-600 capitalize block mb-3', {
     "after:content-['*'] after:ml-1 after:text-red-500": props.required,
   })
 
@@ -42,10 +42,11 @@ const Select: React.ComponentType<SelectProps> = (props) => {
             </option>
           ))}
       </select>
-
-      <span className="block h-4 mb-3 text-xs capitalize text-red-500 p-1">
-        {errorMessage}
-      </span>
+      {!hideDetails && (
+        <span className="block h-4 mb-3 text-xs capitalize text-red-500 p-1">
+          {errorMessage}
+        </span>
+      )}
     </div>
   )
 }

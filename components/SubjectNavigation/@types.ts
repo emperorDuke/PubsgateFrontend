@@ -1,5 +1,5 @@
-import { SubjectDiscipline } from '../../@globalTypes'
+import { Discipline } from '../../@globalTypes'
 
 export interface SubjectNavigationProps {
-  subjects: SubjectDiscipline[]
+  subjects: Discipline[]
 }

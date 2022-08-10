@@ -2,7 +2,7 @@ import { InputProps } from './@types'
 import clsx from 'classNames'
 
 const Input: React.ComponentType<InputProps> = (props) => {
-  const { required, errorMessage, label, ...rest } = props
+  const { required, errorMessage, label, dense, ...rest } = props
 
   const labelProps = {
     htmlFor: props.name || label,
@@ -14,7 +14,7 @@ const Input: React.ComponentType<InputProps> = (props) => {
   }
 
   const labelStyleClass = clsx(
-    'text-slate-600 capitalize block mb-3 font-semibold sr-only',
+    'text-header-col capitalize block mb-3 font-semibold',
     {
       "after:content-['*'] after:ml-1 after:text-red-500": required,
     },
@@ -36,9 +36,11 @@ const Input: React.ComponentType<InputProps> = (props) => {
           { 'border-red-500 focus:ring-pink-500': !!errorMessage },
         )}
       />
-      <span className="block h-4 mb-3 text-xs capitalize text-red-500 p-1">
-        {errorMessage}
-      </span>
+      {!dense && (
+        <span className="block h-4 mb-3 text-xs capitalize text-red-500 p-1">
+          {errorMessage}
+        </span>
+      )}
     </div>
   )
 }

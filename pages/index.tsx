@@ -11,7 +11,7 @@ import Carousel from '../components/Carousel'
 import CarouselItem from '../components/CarouselItem'
 import { GET_SUBJECT_DISCIPLINES } from '../graphql/queries/getSubjectDisciplines'
 import client from '../server-apollo-client'
-import { SubjectDiscipline } from '../@globalTypes'
+import { Discipline } from '../@globalTypes'
 
 const resources = [
   {
@@ -74,7 +74,7 @@ const articles = [
 ]
 
 interface Props {
-  subjectDisciplines: SubjectDiscipline[]
+  subjectDisciplines: Discipline[]
 }
 
 const Home: NextPage<Props> = (props) => {

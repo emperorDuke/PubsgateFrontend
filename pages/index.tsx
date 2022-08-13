@@ -74,7 +74,7 @@ const articles = [
 ]
 
 interface Props {
-  subjectDisciplines: Discipline[]
+  disciplines: Discipline[]
 }
 
 const Home: NextPage<Props> = (props) => {
@@ -110,7 +110,7 @@ const Home: NextPage<Props> = (props) => {
               Explore by subjects
             </h2>
             <div className="rounded-xl">
-              <SubjectNavigation subjects={props.subjectDisciplines} />
+              <SubjectNavigation subjects={props.disciplines} />
             </div>
           </div>
           <div className="col-span-3 w-full">
@@ -252,5 +252,5 @@ export const getServerSideProps = async (): Promise<{ props: Props }> => {
     query: GET_SUBJECT_DISCIPLINES,
   })
 
-  return { props: { subjectDisciplines: data.subjectDisciplines } }
+  return { props: { disciplines: data.disciplines } }
 }

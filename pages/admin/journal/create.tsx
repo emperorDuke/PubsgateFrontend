@@ -16,11 +16,11 @@ interface InitialValues {
   [key: string]: string
   journalName: string
   issn: string
-  subjectDiscipline: string
+  discipline: string
 }
 
 interface Props {
-  subjectDisciplines: Discipline[]
+  disciplines: Discipline[]
 }
 
 const CreateJournalManager: NextPage<Props> = (props) => {
@@ -38,13 +38,13 @@ const CreateJournalManager: NextPage<Props> = (props) => {
   const initialValues: InitialValues = {
     journalName: '',
     issn: '',
-    subjectDiscipline: '',
+    discipline: '',
   }
 
   const fieldType: InitialValues = {
     journalName: 'input',
     issn: 'input',
-    subjectDiscipline: 'select',
+    discipline: 'select',
   }
 
   const validationSchema = yup.object({
@@ -66,19 +66,19 @@ const CreateJournalManager: NextPage<Props> = (props) => {
         variables: {
           name: value.journalName,
           issn: value.issn,
-          subjectDiscipline: value.subjectDiscipline,
+          discipline: value.discipline,
         },
       })
     } catch (e) {}
   }
 
   const selectItems = React.useMemo(() => {
-    return props.subjectDisciplines.map((s) => ({
+    return props.disciplines.map((s) => ({
       label: s.name,
       id: s.id,
       value: s.name,
     }))
-  }, [props.subjectDisciplines])
+  }, [props.disciplines])
 
   return (
     <main>
@@ -146,7 +146,7 @@ export const getServerSideProps = async (): Promise<{ props: Props }> => {
     query: GET_SUBJECT_DISCIPLINES,
   })
 
-  return { props: { subjectDisciplines: data.subjectDisciplines } }
+  return { props: { disciplines: data.disciplines } }
 }
 
 export default CreateJournalManager

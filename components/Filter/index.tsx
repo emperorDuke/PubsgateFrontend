@@ -111,8 +111,8 @@ const Filter: React.ComponentType<FilterProps> = (props) => {
                   )}
                 />
               </Menu.Button>
-              <Menu.Items static>
-                <Menu.Item>
+              <Menu.Items>
+                <Menu.Item as="div" disabled>
                   <form>
                     {articleTypes.map((type) => (
                       <div
@@ -155,8 +155,8 @@ const Filter: React.ComponentType<FilterProps> = (props) => {
                   )}
                 />
               </Menu.Button>
-              <Menu.Items static>
-                <Menu.Item>
+              <Menu.Items>
+                <Menu.Item as="div" disabled>
                   <form>
                     {articleAccess.map((type) => (
                       <div
@@ -199,8 +199,8 @@ const Filter: React.ComponentType<FilterProps> = (props) => {
                   )}
                 />
               </Menu.Button>
-              <Menu.Items static>
-                <Menu.Item>
+              <Menu.Items>
+                <Menu.Item as="div" disabled>
                   <form>
                     {journals.map((j) => (
                       <div
@@ -243,8 +243,8 @@ const Filter: React.ComponentType<FilterProps> = (props) => {
                   )}
                 />
               </Menu.Button>
-              <Menu.Items static>
-                <Menu.Item>
+              <Menu.Items>
+                <Menu.Item disabled>
                   <form>
                     {publicationDates.map((p) => (
                       <div

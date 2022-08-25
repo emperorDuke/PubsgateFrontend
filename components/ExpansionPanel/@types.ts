@@ -9,7 +9,7 @@ export interface ResolvedPanel {
   resolved: boolean
 }
 
-export interface ExpansionCtxType {
+export interface ExpansionPanelCtx {
   expand?: (args: number) => void
   activeIdx: number
   panelsRequireResolve: boolean
@@ -25,12 +25,11 @@ export interface PanelProps {
 
 export interface ItemProps {
   children?: React.ReactNode
-  index?: number
+  index: number
 }
 
 export interface ItemHeaderProps {
   children?: React.ReactNode
   className?: string
-  __onClick?: (idx: number, event?: MouseEvent) => void
   __idx?: number
 }

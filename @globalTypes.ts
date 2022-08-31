@@ -32,6 +32,12 @@ export interface Discipline {
   slug: string
 }
 
+export interface InformationHeading {
+  __typename?: string
+  id: number | string
+  name: string
+}
+
 export type PublicationFrequency =
   | 'ANNUALLY'
   | 'BIANNUALLY'

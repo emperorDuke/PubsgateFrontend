@@ -5,31 +5,12 @@ export const useIsomorphicLayoutEffect =
     ? React.useLayoutEffect
     : React.useEffect
 
-export const useTheme = (theme: 'light' | 'dark' = 'light') => {
-  const [themeState, setThemeState] = React.useState<typeof theme>('light')
+export const useClientSide = () => {
+  const [clientSide, setClientSide] = React.useState(false)
 
-  React.useEffect(() => setThemeState(theme), [theme])
+  React.useEffect(() => {
+    setClientSide(true)
+  }, [])
 
-  const palette = {
-    light: {
-      color: {
-        primary: 'amber-600',
-        primaryLight: 'amber-100/80',
-        primaryDark: 'amber-700',
-        secondary: 'black',
-        secondaryLight: 'slate-500',
-      },
-    },
-    dark: {
-      color: {
-        primary: 'amber-600',
-        primaryLight: 'amber-100/80',
-        primaryDark: 'amber-700',
-        secondary: 'black',
-        secondaryLight: 'slate-500',
-      },
-    },
-  }
-
-  return palette[themeState]
+  return clientSide
 }

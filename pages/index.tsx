@@ -8,10 +8,11 @@ import Link from 'next/link'
 import { ArrowRightIcon, KeyIcon } from '@heroicons/react/solid'
 import Button from '../components/Button'
 import Carousel from '../components/Carousel'
-import CarouselItem from '../components/CarouselItem'
 import { GET_SUBJECT_DISCIPLINES } from '../graphql/queries/getSubjectDisciplines'
 import client from '../server-apollo-client'
 import { Discipline } from '../@globalTypes'
+import CustomEditor from '../components/Editor'
+import { useClientSide } from '../utils/hooks'
 
 const resources = [
   {
@@ -78,6 +79,8 @@ interface Props {
 }
 
 const Home: NextPage<Props> = (props) => {
+  const isClientSide = useClientSide()
+
   return (
     <main>
       <Head>
@@ -115,35 +118,38 @@ const Home: NextPage<Props> = (props) => {
           </div>
           <div className="col-span-3 w-full">
             <div className="flex flex-col flex-nowrap">
-              {/** Carousel start */}
-              <Carousel
-                width="500"
-                height="300"
-                infinite
-                autoplay
-                pauseOnMouseEnter
-              >
-                <CarouselItem>
-                  <div className="bg-red-500">vvfvffffffvfvfvfvfvfvf</div>
-                </CarouselItem>
-                <CarouselItem>
-                  <div className="bg-blue-500">p4444444444444</div>
-                </CarouselItem>
-                <CarouselItem>
-                  <div className="bg-primary-light">p4444444444444</div>
-                </CarouselItem>
-                <CarouselItem>
-                  <div className="relative">
-                    <Image
-                      src="/green.jpg"
-                      alt="green"
-                      layout="fill"
-                      className="rounded-t-lg"
-                    />
-                  </div>
-                </CarouselItem>
-              </Carousel>
-              {/**end */}
+              {
+                /** Carousel start */
+                isClientSide && (
+                  <Carousel
+                    width="500"
+                    height="300"
+                    infinite
+                    autoplay
+                    pauseOnMouseEnter
+                  >
+                    <Carousel.Item>
+                      <div className="bg-red-500">vvfvffffffvfvfvfvfvfvf</div>
+                    </Carousel.Item>
+                    <Carousel.Item>
+                      <div className="bg-blue-500">p4444444444444</div>
+                    </Carousel.Item>
+                    <Carousel.Item>
+                      <div className="bg-primary-light">p4444444444444</div>
+                    </Carousel.Item>
+                    <Carousel.Item>
+                      <div className="relative">
+                        <Image
+                          src="/green.jpg"
+                          alt="green"
+                          layout="fill"
+                          className="rounded-t-lg"
+                        />
+                      </div>
+                    </Carousel.Item>
+                  </Carousel>
+                )
+              }
 
               {/** resources start */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">

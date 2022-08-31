@@ -26,6 +26,7 @@ export interface PanelProps {
 export interface ItemProps {
   children?: React.ReactNode
   index: number
+  as?: string
 }
 
 export interface ItemHeaderProps {

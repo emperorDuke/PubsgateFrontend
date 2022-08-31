@@ -101,6 +101,7 @@ const Panel: React.ComponentType<PanelProps> = ({
 // ExpansionPanelItem
 const Item: React.ComponentType<ItemProps> = (props) => {
   const componentName = 'ItemHeader'
+  const wrapperJsx = props.as || 'div'
 
   const panelHeader = useMemo(() => {
     return React.Children.map(
@@ -129,16 +130,18 @@ const Item: React.ComponentType<ItemProps> = (props) => {
       {(ctx) => (
         <div className="mb-3">
           {panelHeader}
-          <div
-            className={clsx('w-auto', {
-              block: ctx.activeIdx === props.index && ctx.openPanel,
-              hidden:
-                ctx.activeIdx !== props.index ||
-                (ctx.activeIdx === props.index && !ctx.openPanel),
-            })}
-          >
-            {children}
-          </div>
+          {React.createElement(
+            wrapperJsx,
+            {
+              className: clsx('w-auto', {
+                block: ctx.activeIdx === props.index && ctx.openPanel,
+                hidden:
+                  ctx.activeIdx !== props.index ||
+                  (ctx.activeIdx === props.index && !ctx.openPanel),
+              }),
+            },
+            children,
+          )}
         </div>
       )}
     </ExpansionPanelContext.Consumer>

@@ -229,6 +229,7 @@ const Home: NextPage<Props> = (props) => {
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-600">
             News
           </h2>
+          <CustomEditor />
           <div className="grid grid-cols-4 gap-6">
             <Link href="/">
               <a className="col-span-1 shadow-xl border-solid border-x-2 border-b-2 rounded-lg hover:shadow-2xl">

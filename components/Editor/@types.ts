@@ -1,26 +1,31 @@
 import { BaseEditor } from 'slate'
 import { HistoryEditor } from 'slate-history'
 import { ReactEditor } from 'slate-react'
+import { HeadingElement } from './Features/Headings/@types'
+import { ImageElementType } from './Features/Images/@types'
+import { ListElement } from './Features/Lists/@types'
+import { TableElement } from './Features/Tables/@types'
 
 export type CustomEditor = BaseEditor & ReactEditor & HistoryEditor
 export type TextAlignment = 'left' | 'center' | 'justify' | 'right'
 export type MarkFormatType = 'bold' | 'italic' | 'underline' | 'code'
-export type BlockFormatType =
-  | 'paragraph'
-  | 'heading-one'
-  | 'heading-two'
-  | 'block-quote'
-  | 'numbered-list'
-  | 'list-item'
-  | 'bulleted-list'
+export type ParagraphBlockType = 'paragraph'
+export type CustomElement<P> = P & DefaultNodeProperties
 
-export type ElementType = BlockFormatType | TextAlignment | MarkFormatType
+export interface MarkAndBlockBtn {
+  format: string
+  icon: string
+}
 
-type CustomElement = {
-  [key: string]: TextAlignment | CustomText[] | ElementType | undefined
-  type: ElementType
+type DefaultNodeProperties = {
+  [key: string]: CustomText[] | TextAlignment
+  align: TextAlignment
   children: CustomText[]
-  align?: TextAlignment
+}
+
+interface DefaultElement {
+  [key: string]: ParagraphBlockType
+  type: ParagraphBlockType
 }
 
 type CustomText = {
@@ -31,15 +36,15 @@ type CustomText = {
   underline?: boolean
 }
 
-export interface MarkAndBlockBtn {
-  format: ElementType
-  icon: string
-}
-
 declare module 'slate' {
   interface CustomTypes {
     Editor: CustomEditor
-    Element: CustomElement
+    Element:
+      | CustomElement<ImageElementType>
+      | CustomElement<HeadingElement>
+      | CustomElement<TableElement>
+      | CustomElement<ListElement>
+      | CustomElement<DefaultElement>
     Text: CustomText
   }
 }

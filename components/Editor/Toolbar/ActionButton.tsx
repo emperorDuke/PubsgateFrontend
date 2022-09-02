@@ -1,7 +1,7 @@
 import { useSlate } from 'slate-react'
-import Button from '../Button'
+import Button from '../../Button'
 import clsx from 'classNames'
-import { MarkAndBlockBtn } from './@types'
+import { MarkAndBlockBtn, MarkFormatType } from '../@types'
 import { editorActionIcons } from './Icons'
 import {
   isBlockActive,
@@ -9,7 +9,7 @@ import {
   TEXT_ALIGN_TYPES,
   toggleBlock,
   toggleMark,
-} from './utils'
+} from '../utils'
 
 export const BlockButton = ({ format, icon }: MarkAndBlockBtn) => {
   const editor = useSlate()
@@ -49,7 +49,7 @@ export const MarkButton = ({ format, icon }: MarkAndBlockBtn) => {
       })}
       onMouseDown={(event) => {
         event.preventDefault()
-        toggleMark(editor, format)
+        toggleMark(editor, format as MarkFormatType)
       }}
     >
       {editorActionIcons[icon]}

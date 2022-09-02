@@ -9,14 +9,30 @@ import {
   withReact,
 } from 'slate-react'
 import { HOTKEYS, toggleMark } from './utils'
-import { BlockButton, MarkButton } from './ActionButton'
-import { Element } from './CustomBlockElement'
-import { Leaf } from './CustomLeafElement'
+import { BlockButton, MarkButton } from './Toolbar/ActionButton'
+import { Element } from './Blocks'
+import { Leaf } from './Leafs'
+import { withTables } from './Features/Tables/plugin'
+import { TableButton } from './Features/Tables/components/ActionBtn'
 
-const initialValue: Descendant[] = [
+const initialValue = [
   {
     type: 'paragraph',
-    children: [{ text: '' }],
+    children: [
+      {
+        text:
+          'Since the editor is based on a recursive tree model, similar to an HTML document, you can create complex nested structures, like tables:',
+      },
+    ],
+  },
+  {
+    type: 'paragraph',
+    children: [
+      {
+        text:
+          "This table is just a basic example of rendering a table, and it doesn't have fancy functionality. But you could augment it to add support for navigating with arrow keys, displaying table headers, adding column and rows, or even formulas if you wanted to get really crazy!",
+      },
+    ],
   },
 ]
 
@@ -29,10 +45,25 @@ const CustomEditor: React.ComponentType = () => {
     (props: RenderLeafProps) => <Leaf {...props} />,
     [],
   )
-  const editor = useMemo(() => withHistory(withReact(createEditor())), [])
+  const editor = useMemo(
+    () => withTables(withHistory(withReact(createEditor()))),
+    [],
+  )
 
   return (
-    <Slate editor={editor} value={initialValue}>
+    <Slate
+      editor={editor}
+      value={initialValue as Descendant[]}
+      // onChange={(value) => {
+      //   const isAstChange = editor.operations.some(
+      //     (op) => 'set_selection' !== op.type,
+      //   )
+
+      //   if (isAstChange) {
+      //     console.log(JSON.stringify(value))
+      //   }
+      // }}
+    >
       <div className="py-3 flex">
         <MarkButton format="bold" icon="format-bold" />
         <MarkButton format="italic" icon="format-italic" />
@@ -46,6 +77,7 @@ const CustomEditor: React.ComponentType = () => {
         <BlockButton format="center" icon="format-align-center" />
         <BlockButton format="right" icon="format-align-right" />
         <BlockButton format="justify" icon="format-align-justify" />
+        <TableButton />
       </div>
       <Editable
         renderElement={renderElement}

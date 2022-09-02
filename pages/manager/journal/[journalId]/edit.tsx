@@ -17,7 +17,7 @@ import { PanelCallback } from '../../../../components/ExpansionPanel/@types'
 import { EDIT_JOURNAL_INFORMATION } from '../../../../graphql/mutations/editJournalInformation'
 import client from '../../../../server-apollo-client'
 import { GET_INFORMATION_HEADINGS } from '../../../../graphql/queries/getInformationHeadings'
-import CustomEditor from '../../../../components/Editor'
+import Editor from '../../../../components/Editor'
 
 interface JournalSectionProps {
   panelResolver: PanelCallback['next']
@@ -161,7 +161,7 @@ const JournalInfoSection: ComponentType<InformationSection> = (props) => {
         {props.informationHeadings.map((heading) => (
           <div key={heading.id}>
             <label>{heading.name}</label>
-            <CustomEditor />
+            <Editor />
           </div>
         ))}
       </div>

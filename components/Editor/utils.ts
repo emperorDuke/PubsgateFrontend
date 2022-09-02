@@ -1,5 +1,5 @@
 import { Editor, Transforms, Element as SlateElement } from 'slate'
-import { CustomEditor, TextAlignment, ElementType } from './@types'
+import { CustomEditor, TextAlignment, MarkFormatType } from './@types'
 
 export const LIST_TYPES = ['numbered-list', 'bulleted-list']
 export const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify']
@@ -14,7 +14,7 @@ export const HOTKEYS: any = {
  * @param editor
  * @param format
  */
-export const toggleBlock = (editor: CustomEditor, format: ElementType) => {
+export const toggleBlock = (editor: CustomEditor, format: string) => {
   const isList = LIST_TYPES.includes(format)
   const isActive = isBlockActive(
     editor,
@@ -32,7 +32,7 @@ export const toggleBlock = (editor: CustomEditor, format: ElementType) => {
     split: true,
   })
 
-  let newProperties: Partial<SlateElement>
+  let newProperties: any
 
   // set `align` property on the node if the incoming format is a
   //`text alignment feature e.g center, left, justify, right`
@@ -54,7 +54,8 @@ export const toggleBlock = (editor: CustomEditor, format: ElementType) => {
 
   if (!isActive && isList) {
     // wrapping the list-item in a <ol> or <ul>
-    Transforms.wrapNodes(editor, { type: format, children: [] })
+    const block: any = { type: format, children: [] }
+    Transforms.wrapNodes(editor, block)
   }
 }
 
@@ -63,7 +64,7 @@ export const toggleBlock = (editor: CustomEditor, format: ElementType) => {
  * @param editor
  * @param format
  */
-export const toggleMark = (editor: CustomEditor, format: ElementType) => {
+export const toggleMark = (editor: CustomEditor, format: MarkFormatType) => {
   const isActive = isMarkActive(editor, format)
 
   if (isActive) {
@@ -82,7 +83,7 @@ export const toggleMark = (editor: CustomEditor, format: ElementType) => {
  */
 export const isBlockActive = (
   editor: CustomEditor,
-  format: ElementType,
+  format: string,
   blockType = 'type',
 ) => {
   const { selection } = editor
@@ -108,7 +109,7 @@ export const isBlockActive = (
  * @param format
  * @returns boolean
  */
-export const isMarkActive = (editor: CustomEditor, format: ElementType) => {
+export const isMarkActive = (editor: CustomEditor, format: string) => {
   const marks = Editor.marks(editor)
   return marks ? marks[format] === true : false
 }

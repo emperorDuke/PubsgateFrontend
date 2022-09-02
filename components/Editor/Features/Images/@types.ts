@@ -1,4 +1,4 @@
-export interface ImageElementType {
+export interface ImageElement {
   [key: string]: 'image' | string
   type: 'image'
   url: string

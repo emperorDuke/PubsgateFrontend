@@ -2,33 +2,22 @@ import { BaseEditor } from 'slate'
 import { HistoryEditor } from 'slate-history'
 import { ReactEditor } from 'slate-react'
 import { HeadingElement } from './Features/Headings/@types'
-import { ImageElementType } from './Features/Images/@types'
+import { ImageElement } from './Features/Images/@types'
 import { ListElement } from './Features/Lists/@types'
 import { TableElement } from './Features/Tables/@types'
 
-export type CustomEditor = BaseEditor & ReactEditor & HistoryEditor
-export type TextAlignment = 'left' | 'center' | 'justify' | 'right'
-export type MarkFormatType = 'bold' | 'italic' | 'underline' | 'code'
-export type ParagraphBlockType = 'paragraph'
-export type CustomElement<P> = P & DefaultNodeProperties
-
-export interface MarkAndBlockBtn {
-  format: string
-  icon: string
-}
-
-type DefaultNodeProperties = {
+export interface DefaultNodeProperties {
   [key: string]: CustomText[] | TextAlignment
   align: TextAlignment
   children: CustomText[]
 }
 
-interface DefaultElement {
+export interface DefaultElement {
   [key: string]: ParagraphBlockType
   type: ParagraphBlockType
 }
 
-type CustomText = {
+export interface CustomText {
   [key: string]: string | boolean | undefined
   text: string
   bold?: boolean
@@ -36,11 +25,17 @@ type CustomText = {
   underline?: boolean
 }
 
+export type CustomEditor = BaseEditor & ReactEditor & HistoryEditor
+export type TextAlignment = 'left' | 'center' | 'justify' | 'right'
+export type MarkFormatType = 'bold' | 'italic' | 'underline' | 'code'
+export type ParagraphBlockType = 'paragraph'
+export type CustomElement<P> = P & DefaultNodeProperties
+
 declare module 'slate' {
   interface CustomTypes {
     Editor: CustomEditor
     Element:
-      | CustomElement<ImageElementType>
+      | CustomElement<ImageElement>
       | CustomElement<HeadingElement>
       | CustomElement<TableElement>
       | CustomElement<ListElement>

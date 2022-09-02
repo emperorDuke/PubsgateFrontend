@@ -1,7 +1,7 @@
 import { useSlate } from 'slate-react'
 import Button from '../../Button'
 import clsx from 'classNames'
-import { MarkAndBlockBtn } from './@types'
+import { BlockBtn, MarkBtn } from './@types'
 import { editorActionIcons } from './Icons'
 import {
   isBlockActive,
@@ -12,7 +12,7 @@ import {
 } from '../utils'
 import { MarkFormatType } from '../@types'
 
-export const BlockButton = ({ format, icon }: MarkAndBlockBtn) => {
+export const BlockButton = ({ format, icon }: BlockBtn) => {
   const editor = useSlate()
   const isActive = isBlockActive(
     editor,
@@ -37,7 +37,7 @@ export const BlockButton = ({ format, icon }: MarkAndBlockBtn) => {
   )
 }
 
-export const MarkButton = ({ format, icon }: MarkAndBlockBtn) => {
+export const MarkButton = ({ format, icon }: MarkBtn) => {
   const editor = useSlate()
   const isActive = isMarkActive(editor, format)
 

@@ -1,6 +1,7 @@
 import {
   Editor,
   Element as SlateElement,
+  Node,
   Path,
   Point,
   Range,
@@ -89,12 +90,9 @@ export const withTables = (editor: CustomEditor) => {
 
     if (SlateElement.isElement(node) && node.type === 'table') {
       const pointAfterTable = Editor.after(editor, nodePath)
-      const block: any = {
-        type: 'paragraph',
-        children: [{ text: '' }],
-      }
+      const block = { type: 'paragraph', children: [{ text: '' }] }
 
-      if (!pointAfterTable) {
+      if (!pointAfterTable && Node.isNode(block)) {
         Transforms.insertNodes(editor, block, {
           at: Path.next(nodePath),
           select: true,

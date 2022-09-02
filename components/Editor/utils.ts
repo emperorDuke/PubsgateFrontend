@@ -1,6 +1,11 @@
 import { Editor, Transforms, Element as SlateElement } from 'slate'
 import { CustomEditor, TextAlignment, MarkFormatType } from './@types'
 
+type Toggle = (
+  e: CustomEditor,
+  format: SlateElement['type'] | TextAlignment,
+) => void
+
 export const LIST_TYPES = ['numbered-list', 'bulleted-list']
 export const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify']
 export const HOTKEYS: any = {
@@ -14,7 +19,7 @@ export const HOTKEYS: any = {
  * @param editor
  * @param format
  */
-export const toggleBlock = (editor: CustomEditor, format: string) => {
+export const toggleBlock: Toggle = (editor, format) => {
   const isList = LIST_TYPES.includes(format)
   const isActive = isBlockActive(
     editor,
@@ -32,7 +37,7 @@ export const toggleBlock = (editor: CustomEditor, format: string) => {
     split: true,
   })
 
-  let newProperties: any
+  let newProperties: Partial<SlateElement>
 
   // set `align` property on the node if the incoming format is a
   //`text alignment feature e.g center, left, justify, right`
@@ -45,17 +50,21 @@ export const toggleBlock = (editor: CustomEditor, format: string) => {
     // set node to <li> else set node to whatever
     // WHATEVER has no special code logic
     newProperties = {
-      type: isActive ? 'paragraph' : isList ? 'list-item' : format,
+      type: isActive ? 'paragraph' : isList ? 'list-item' : (format as any),
     }
   }
 
   // change the node type and also set node alignment
+
   Transforms.setNodes<SlateElement>(editor, newProperties)
 
   if (!isActive && isList) {
     // wrapping the list-item in a <ol> or <ul>
-    const block: any = { type: format, children: [] }
-    Transforms.wrapNodes(editor, block)
+    const block = { type: format, children: [] }
+
+    if (SlateElement.isElement(block)) {
+      Transforms.wrapNodes(editor, block)
+    }
   }
 }
 

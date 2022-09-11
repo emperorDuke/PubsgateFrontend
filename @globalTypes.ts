@@ -38,6 +38,12 @@ export interface InformationHeading {
   name: string
 }
 
+export interface JournalSubjectArea {
+  __typename?: string
+  id: number | string
+  name: string
+}
+
 export type PublicationFrequency =
   | 'ANNUALLY'
   | 'BIANNUALLY'

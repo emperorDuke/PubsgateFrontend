@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { createEditor, Descendant } from 'slate'
 import { withHistory } from 'slate-history'
 import {
@@ -30,14 +30,6 @@ const initValue = {
 }
 
 const CustomEditor: React.ComponentType<EditorProps> = (props) => {
-  const [initval, setInitVal] = useState<Descendant[]>([])
-
-  useEffect(() => {
-    if (props.value) {
-      setInitVal([JSON.parse(props.value)])
-    }
-  }, [props.value])
-
   const renderElement = useCallback(
     (props: RenderElementProps) => <Element {...props} />,
     [],
@@ -54,13 +46,13 @@ const CustomEditor: React.ComponentType<EditorProps> = (props) => {
     [],
   )
 
-  const handleChange = (value: {}) => {
+  const handleChange = (value: Descendant[]) => {
     const isAstChange = editor.operations.some(
       (op) => 'set_selection' !== op.type,
     )
 
     if (isAstChange) {
-      props.onChange(JSON.stringify(value))
+      props.onChange && props.onChange(value)
     }
   }
 
@@ -71,8 +63,8 @@ const CustomEditor: React.ComponentType<EditorProps> = (props) => {
 
   return (
     <section className="border border-border-col rounded-lg bg-white">
-      {initval && initval.length && (
-        <Slate editor={editor} value={initval} onChange={handleChange}>
+      {props.value && props.value.length && (
+        <Slate editor={editor} value={props.value} onChange={handleChange}>
           <Toolbar {...toolbarProps}>
             <MarkButton format="bold" icon="format-bold" />
             <MarkButton format="italic" icon="format-italic" />
@@ -99,13 +91,13 @@ const CustomEditor: React.ComponentType<EditorProps> = (props) => {
             </Toolbar.Group>
           </Toolbar>
           <Editable
-            as="article"
             className="p-3"
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             placeholder="Enter text…"
             spellCheck
             autoFocus
+            name="custom-editor"
             onKeyDown={(event) => {
               for (const hotkey in HOTKEYS) {
                 if (event.ctrlKey && event.key === hotkey) {

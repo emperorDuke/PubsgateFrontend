@@ -1,4 +1,4 @@
-import { BaseEditor } from 'slate'
+import { BaseEditor, Descendant } from 'slate'
 import { HistoryEditor } from 'slate-history'
 import { ReactEditor } from 'slate-react'
 import { HeadingElement } from './Features/Headings/@types'
@@ -8,8 +8,9 @@ import { TableElement } from './Features/Tables/@types'
 import { ToolbarProps } from './Toolbar/@types'
 
 export interface EditorProps extends ToolbarProps {
-  onChange: (value: {}) => void
-  value: any
+  onChange?: (value: Descendant[]) => void
+  onBlur?: (e?: React.FocusEvent<HTMLDivElement>) => void
+  value: Descendant[]
 }
 
 export interface DefaultNodeProperties {

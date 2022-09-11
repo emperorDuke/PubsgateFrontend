@@ -29,6 +29,7 @@ export interface ItemProps {
   children?: React.ReactNode
   index: number
   as?: string
+  className?: string
 }
 
 export interface ItemHeaderProps {

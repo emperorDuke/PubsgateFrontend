@@ -130,12 +130,12 @@ const Item: React.FC<ItemProps> = (props) => {
   return (
     <ExpansionPanelContext.Consumer>
       {(ctx) => (
-        <div className="mb-3">
+        <section className="mb-3">
           {panelHeader}
           {React.createElement(
             wrapperJsx,
             {
-              className: clsx('w-auto', {
+              className: clsx('w-auto', props.className, {
                 block: ctx.activeIdx === props.index && ctx.openPanel,
                 hidden:
                   ctx.activeIdx !== props.index ||
@@ -144,7 +144,7 @@ const Item: React.FC<ItemProps> = (props) => {
             },
             children,
           )}
-        </div>
+        </section>
       )}
     </ExpansionPanelContext.Consumer>
   )

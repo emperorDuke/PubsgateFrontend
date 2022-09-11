@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react'
+import React from 'react'
 import * as yup from 'yup'
 import { NextPage } from 'next'
 import { useMutation } from '@apollo/client'
@@ -10,6 +10,7 @@ import {
   FieldSchema,
   InformationHeading,
   Journal,
+  JournalSubjectArea,
 } from '../../../../@globalTypes'
 import FormBuilder from '../../../../components/FormBuilder'
 import ExpansionPanel from '../../../../components/ExpansionPanel'
@@ -22,6 +23,8 @@ import { EDIT_JOURNAL_SUBJECT_AREA } from '../../../../graphql/mutations/journal
 import Input from '../../../../components/Input'
 import { PlusIcon, XIcon } from '@heroicons/react/solid'
 import clsx from 'classNames'
+import { Descendant } from 'slate'
+import { GET_JOURNAL_SUBJECT_AREAS } from '../../../../graphql/queries/journalSubjectAreas'
 
 interface JournalSectionProps {
   panelResolver: PanelCallback['resolver']
@@ -31,8 +34,13 @@ interface InformationSection extends JournalSectionProps {
   informationHeadings: InformationHeading[]
 }
 
+interface SubjectAreaSection extends JournalSectionProps {
+  subjectAreas: JournalSubjectArea[]
+}
+
 interface Props {
   informationHeadings: InformationHeading[]
+  subjectAreas: JournalSubjectArea[]
 }
 
 interface SubjectArea {
@@ -41,9 +49,17 @@ interface SubjectArea {
   action: 'CREATE' | 'UPDATE' | 'DELETE'
   label: string
   error: string
+  fromServer: boolean
 }
 
-const JournalSection: ComponentType<JournalSectionProps> = (props) => {
+interface InfoSchema {
+  id: number | string
+  value: Descendant[]
+  name: string
+  error: string
+}
+
+const JournalSection: React.FC<JournalSectionProps> = (props) => {
   const [editJournal, { error, data, loading }] = useMutation(EDIT_JOURNAL)
   const router = useRouter()
 
@@ -163,101 +179,157 @@ const JournalSection: ComponentType<JournalSectionProps> = (props) => {
   )
 }
 
-const JournalInfoSection: ComponentType<InformationSection> = (props) => {
-  const [editInformation, ops] = useMutation(EDIT_JOURNAL_INFORMATION)
+const JournalInfoSection: React.FC<InformationSection> = (props) => {
   const router = useRouter()
+  const [editInformation, ops] = useMutation(EDIT_JOURNAL_INFORMATION)
+  const [sections, setSections] = React.useState<InfoSchema[]>([])
 
-  const handleSubmission = async (values: { [key: string]: string }) => {
+  React.useEffect(() => {
+    setSections(
+      props.informationHeadings.map((heading) => {
+        return {
+          id: heading.id,
+          name: heading.name,
+          error: '',
+          value: [
+            {
+              type: 'paragraph',
+              children: [{ text: '' }],
+            } as Descendant,
+          ],
+        }
+      }),
+    )
+  }, [setSections, props.informationHeadings])
+
+  const hasError = () => {
+    return sections.some(
+      (s: any) =>
+        !s.value[0].children[0].text || s.value[0].children[0].text.length < 20,
+    )
+  }
+
+  const updateErrorSection = () => {
+    setSections((sections) =>
+      sections.map((s: any) => {
+        if (
+          !s.value[0].children[0].text ||
+          s.value[0].children[0].text.length < 20
+        ) {
+          s.error = `${s.name} is required`
+          return s
+        }
+
+        return s
+      }),
+    )
+  }
+
+  const getValues = () => {
+    return sections.map((section) => {
+      return {
+        headingId: section.id,
+        content: JSON.stringify(section.value),
+      }
+    })
+  }
+
+  const handleSubmission = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (hasError()) {
+      updateErrorSection()
+
+      return
+    }
+
     await editInformation({
       variables: {
         journalId: router.query.journalId,
-        ...values,
+        information: getValues(),
       },
     })
   }
 
-  const initialValues = React.useMemo(() => {
-    const values: { [key: string]: string } = {}
-
-    props.informationHeadings.forEach((heading) => {
-      values[heading.name] = JSON.stringify({
-        type: 'paragraph',
-        children: [{ text: '' }],
-      })
-    })
-
-    return values
-  }, [props.informationHeadings])
-
-  const validationSchema = React.useMemo(() => {
-    const values: { [key: string]: yup.StringSchema } = {}
-
-    props.informationHeadings.forEach((heading) => {
-      values[heading.name] = yup
-        .string()
-        .required(`${heading.name} is required`)
-    })
-
-    return yup.object({ ...values })
-  }, [props.informationHeadings])
+  const handleChange = (id: number | string) => (value: Descendant[]) => {
+    setSections((sections) =>
+      sections.map((s) =>
+        id === s.id
+          ? {
+              ...s,
+              value,
+            }
+          : s,
+      ),
+    )
+  }
 
   return (
     <div className="grid grid-cols-6 bg-layout-col rounded-b-lg border border-border-col">
       <div className="col-start-1 col-span-6 md:col-start-2 md:col-span-4 p-3">
         <h2 className="text-2xl font-bold mb-6">Edit information</h2>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmission}
-        >
-          {(formik) => (
-            <form onSubmit={formik.handleSubmit}>
-              {props.informationHeadings.map((heading) => (
-                <div key={heading.id}>
-                  <label
-                    htmlFor={heading.name}
-                    className="text-header-col capitalize block mb-3 font-semibold"
-                  >
-                    {heading.name}
-                  </label>
-                  <div id={heading.name}>
-                    <Editor
-                      onChange={formik.handleChange}
-                      value={formik.values[heading.name] as string}
-                      size="small"
-                      variant="minimal"
-                    />
-                  </div>
-                  <p className="h-4 mb-3 text-xs capitalize text-red-500 p-1">
-                    {formik.errors[heading.name] ||
-                      (ops.error && ops.error.message)}
-                  </p>
-                </div>
-              ))}
+        <form onSubmit={handleSubmission}>
+          {sections.map((section) => (
+            <div key={section.id}>
+              <label
+                htmlFor={section.name}
+                className="text-header-col capitalize block mb-3 font-semibold"
+              >
+                {section.name}
+              </label>
+              <div id={section.name}>
+                <Editor
+                  onChange={handleChange(section.id)}
+                  value={section.value}
+                  size="small"
+                  variant="minimal"
+                />
+              </div>
+              <p className="h-4 mb-3 text-xs capitalize text-red-500 p-1">
+                {section.error || (ops.error && ops.error.message)}
+              </p>
+            </div>
+          ))}
 
-              <Button type="submit" fullWidth disabled={formik.isSubmitting}>
-                {ops.loading ? 'loading' : 'submit'}
-              </Button>
-            </form>
-          )}
-        </Formik>
+          <Button type="submit" fullWidth>
+            {ops.loading ? 'loading' : 'submit'}
+          </Button>
+        </form>
       </div>
     </div>
   )
 }
 
-const SubjectAreaSection: ComponentType<JournalSectionProps> = (props) => {
+const SubjectAreaSection: React.FC<SubjectAreaSection> = (props) => {
   const router = useRouter()
   const [editSubjectArea, ops] = useMutation(EDIT_JOURNAL_SUBJECT_AREA)
-  const [subjectAreas, setSubjectArea] = React.useState<SubjectArea[]>([
-    {
-      id: 1,
-      name: '',
-      action: 'CREATE',
-      label: `subject ${1}`,
-      error: '',
-    },
-  ])
+  const [subjectAreas, setSubjectArea] = React.useState<SubjectArea[]>([])
+  const [subjectTrash, setTrash] = React.useState<Partial<SubjectArea>[]>([])
+
+  React.useEffect(() => {
+    if (props.subjectAreas && props.subjectAreas.length) {
+      setSubjectArea(
+        props.subjectAreas.map((area, i) => ({
+          ...area,
+          label: `subject ${i + 1}`,
+          error: '',
+          action: 'UPDATE',
+          fromServer: true,
+        })),
+      )
+    } else {
+      setSubjectArea([
+        {
+          id: 1,
+          name: '',
+          action: 'CREATE',
+          label: `subject ${1}`,
+          error: '',
+          fromServer: false,
+        },
+      ])
+    }
+  }, [props.subjectAreas])
 
   const checkError = () => {
     const errorId = subjectAreas.findIndex((s) => !s.name)
@@ -282,8 +354,8 @@ const SubjectAreaSection: ComponentType<JournalSectionProps> = (props) => {
     }
   }
 
-  const addSubjectArea = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+  const addSubjectArea = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    e && e.preventDefault()
 
     const errorId = checkError().id
 
@@ -300,21 +372,47 @@ const SubjectAreaSection: ComponentType<JournalSectionProps> = (props) => {
         action: 'CREATE',
         label: `subject ${areas.length + 1}`,
         error: '',
+        fromServer: false,
       },
     ])
+  }
+
+  const trashSubjectArea = (id: number | string) => {
+    setTrash((trash) =>
+      trash.concat(
+        subjectAreas
+          .filter((area) => area.id === id && area.fromServer)
+          .map((area) => ({
+            name: area.name,
+            id: area.id,
+            action: 'DELETE',
+          })),
+      ),
+    )
+
+    setSubjectArea((areas) =>
+      areas
+        .filter((area) => area.id !== id)
+        .map((area, i) => ({ ...area, label: `subject ${i + 1}` })),
+    )
   }
 
   const deleteSubjectArea = (id: number | string) => {
     return (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
 
-      if (subjectAreas.length === 1) return
+      if (subjectAreas.length === 1 && !subjectAreas[0].fromServer) {
+        return
+      }
 
-      setSubjectArea((areas) =>
-        areas
-          .filter((v) => v.id !== id)
-          .map((v, i) => ({ ...v, label: `subject ${i + 1}` })),
-      )
+      if (subjectAreas.length === 1 && subjectAreas[0].fromServer) {
+        trashSubjectArea(id)
+        addSubjectArea()
+
+        return
+      }
+
+      trashSubjectArea(id)
     }
   }
 
@@ -330,6 +428,23 @@ const SubjectAreaSection: ComponentType<JournalSectionProps> = (props) => {
     )
   }
 
+  const getValues = (): Array<Partial<SubjectArea>> => {
+    return subjectAreas.map((area) => {
+      if (area.action === 'CREATE') {
+        return {
+          name: area.name,
+          action: area.action,
+        }
+      } else {
+        return {
+          name: area.name,
+          action: area.action,
+          id: area.id,
+        }
+      }
+    })
+  }
+
   const handleSubmission = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -343,7 +458,7 @@ const SubjectAreaSection: ComponentType<JournalSectionProps> = (props) => {
     await editSubjectArea({
       variables: {
         journalId: router.query.journalId,
-        ...subjectAreas,
+        subjectAreas: getValues().concat(subjectTrash),
       },
     })
   }
@@ -445,7 +560,10 @@ const EditJournalPage: NextPage<Props> = (props) => {
                     >
                       Journal subject areas
                     </ExpansionPanel.Header>
-                    <SubjectAreaSection panelResolver={resolver} />
+                    <SubjectAreaSection
+                      panelResolver={resolver}
+                      subjectAreas={props.subjectAreas}
+                    />
                   </ExpansionPanel.Item>
                 </>
               )}
@@ -460,9 +578,17 @@ const EditJournalPage: NextPage<Props> = (props) => {
 export default EditJournalPage
 
 export const getServerSideProps = async (): Promise<{ props: Props }> => {
-  const { data } = await client().query({
+  const {
+    data: { informationHeadings },
+  } = await client().query({
     query: GET_INFORMATION_HEADINGS,
   })
 
-  return { props: { informationHeadings: data.informationHeadings } }
+  // const {
+  //   data: { subjectAreas },
+  // } = await client().query({
+  //   query: GET_JOURNAL_SUBJECT_AREAS,
+  // })
+
+  return { props: { informationHeadings, subjectAreas: [] } }
 }

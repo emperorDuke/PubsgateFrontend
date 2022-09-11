@@ -1,4 +1,11 @@
-import { Editor, Node, Path, Range, Transforms } from 'slate'
+import {
+  Editor,
+  Node,
+  Path,
+  Range,
+  Transforms,
+  Element as SlateElement,
+} from 'slate'
 import { CustomEditor } from '../../@types'
 import { insertImage, isImageUrl } from './utils'
 
@@ -48,6 +55,7 @@ export const withCorrectVoidBehavior = (editor: CustomEditor) => {
 
     const selectedNodePath = Path.parent(editor.selection.anchor.path)
     const selectedNode = Node.get(editor, selectedNodePath)
+
     if (Editor.isVoid(editor, selectedNode)) {
       const block = { type: 'paragraph', children: [{ text: '' }] }
       Node.isNode(block) && Editor.insertNode(editor, block)
@@ -60,24 +68,22 @@ export const withCorrectVoidBehavior = (editor: CustomEditor) => {
 
   // if prev node is a void node, remove the current node and select the void node
   editor.deleteBackward = (unit) => {
-    if (
-      !editor.selection ||
-      !Range.isCollapsed(editor.selection) ||
-      editor.selection.anchor.offset !== 0
-    ) {
+    if (!editor.selection || !Range.isCollapsed(editor.selection)) {
       return deleteBackward(unit)
     }
 
-    const parentPath = Path.parent(editor.selection.anchor.path)
-    const parentNode = Node.get(editor, parentPath)
-    const parentIsEmpty = Node.string(parentNode).length === 0
+    const textPath = editor.selection.anchor.path
+    const textNode = Node.get(editor, textPath)
+    const paragraphPath = Path.parent(textPath)
 
-    if (parentIsEmpty && Path.hasPrevious(parentPath)) {
-      const prevNodePath = Path.previous(parentPath)
+    if (!Node.string(textNode) && Path.hasPrevious(paragraphPath)) {
+      const prevNodePath = Path.previous(paragraphPath)
       const prevNode = Node.get(editor, prevNodePath)
 
       if (Editor.isVoid(editor, prevNode)) {
-        return Transforms.removeNodes(editor)
+        Transforms.removeNodes(editor)
+
+        return
       }
     }
 

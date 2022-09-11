@@ -11,26 +11,30 @@ import {
   toggleMark,
 } from '../utils'
 import { MarkFormatType } from '../@types'
+import { useContext } from 'react'
+import ToolbarContext from './context'
 
 export const BlockButton = ({ format, icon }: BlockBtn) => {
   const editor = useSlate()
-  const isActive = isBlockActive(
-    editor,
-    format,
-    TEXT_ALIGN_TYPES.includes(format) ? 'align' : 'type',
-  )
+  const toolbarCtx = useContext(ToolbarContext)
+
+  const isAlignment = TEXT_ALIGN_TYPES.includes(format)
+  const isActive = isBlockActive(editor, format, isAlignment ? 'align' : 'type')
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    toggleBlock(editor, format)
+  }
 
   return (
     <Button
       variant="icon"
+      size={toolbarCtx.size}
       className={clsx({
         'text-black-500': isActive,
         'text-gray-400': !isActive,
       })}
-      onMouseDown={(event) => {
-        event.preventDefault()
-        toggleBlock(editor, format)
-      }}
+      onClick={handleClick}
     >
       {editorActionIcons[icon]}
     </Button>
@@ -39,19 +43,24 @@ export const BlockButton = ({ format, icon }: BlockBtn) => {
 
 export const MarkButton = ({ format, icon }: MarkBtn) => {
   const editor = useSlate()
+  const toolbarCtx = useContext(ToolbarContext)
+
   const isActive = isMarkActive(editor, format)
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    toggleMark(editor, format as MarkFormatType)
+  }
 
   return (
     <Button
       variant="icon"
+      size={toolbarCtx.size}
       className={clsx({
         'text-black-500': isActive,
         'text-gray-400': !isActive,
       })}
-      onMouseDown={(event) => {
-        event.preventDefault()
-        toggleMark(editor, format as MarkFormatType)
-      }}
+      onClick={handleClick}
     >
       {editorActionIcons[icon]}
     </Button>

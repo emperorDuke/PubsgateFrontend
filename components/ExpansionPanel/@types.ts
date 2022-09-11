@@ -1,7 +1,8 @@
 import React from 'react'
 
 export interface PanelCallback {
-  next: () => void
+  resolver: () => void
+  activeIndex: number
 }
 
 export interface ResolvedPanel {
@@ -12,7 +13,7 @@ export interface ResolvedPanel {
 export interface ExpansionPanelCtx {
   expand?: (args: number) => void
   activeIdx: number
-  panelsRequireResolve: boolean
+  requireResolve: boolean
   resolvedPanels: ResolvedPanel[]
   openPanel: boolean
 }
@@ -21,6 +22,7 @@ export interface PanelProps {
   children?: React.ReactNode | ((args: PanelCallback) => React.ReactNode)
   totalPanel: number
   accordion?: boolean
+  requireResolve?: boolean
 }
 
 export interface ItemProps {

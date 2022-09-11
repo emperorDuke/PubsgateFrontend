@@ -2,15 +2,25 @@ import { InputProps } from './@types'
 import clsx from 'classNames'
 
 const Input: React.ComponentType<InputProps> = (props) => {
-  const { required, errorMessage, label, dense, ...rest } = props
+  const {
+    required,
+    errorMessage,
+    label,
+    dense,
+    leftSlot,
+    rightSlot,
+    id,
+    name,
+    ...rest
+  } = props
 
   const labelProps = {
-    htmlFor: props.name || label,
+    htmlFor: id || label,
   }
 
   const inputProps = {
-    id: props.id || label,
-    name: props.name || label,
+    id: id || label,
+    name: name || label,
   }
 
   const labelStyleClass = clsx(
@@ -21,25 +31,29 @@ const Input: React.ComponentType<InputProps> = (props) => {
   )
 
   return (
-    <div>
+    <div className="w-full">
       <label className={labelStyleClass} {...labelProps}>
-        {label && label.split('_').join(' ')}
+        {label && label.replace(/([a-zA-Z])(?=[A-Z])/g, '$1 ')}
       </label>
-      <input
-        {...inputProps}
-        {...rest}
-        className={clsx(
-          'border-solid border rounded-lg py-3 px-2 w-full border-border-col',
-          'active:border-sky-600 shadow-sm placeholder-slate-400',
-          'focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500',
-          'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200',
-          { 'border-red-500 focus:ring-pink-500': !!errorMessage },
-        )}
-      />
+      <div className="flex flex-nowrap items-center">
+        <input
+          {...inputProps}
+          {...rest}
+          className={clsx(
+            'border-solid border rounded-lg py-3 px-2 w-full border-border-col',
+            'active:border-sky-600 placeholder-slate-400',
+            'focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500',
+            'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200',
+            { 'border-red-500 focus:ring-pink-500': !!errorMessage },
+          )}
+        />
+        {rightSlot && <span>{rightSlot}</span>}
+      </div>
+
       {!dense && (
-        <span className="block h-4 mb-3 text-xs capitalize text-red-500 p-1">
+        <p className="block h-4 mb-3 text-xs capitalize text-red-500 p-1">
           {errorMessage}
-        </span>
+        </p>
       )}
     </div>
   )

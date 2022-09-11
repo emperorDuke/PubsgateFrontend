@@ -1,25 +1,16 @@
-import {
-  Transforms,
-  Range,
-  Descendant,
-  Editor,
-  Element as SlateElement,
-} from 'slate'
+import { Transforms, Range, Editor, Element as SlateElement } from 'slate'
 import { CustomEditor } from '../../@types'
 
-const rows = 5
-const columns = 4
-
-export const createTableNode = () => {
+export const createTableNode = (nRow: number, nCol: number) => {
   const rowCells = []
 
-  for (let i = 0; i < rows; i++) {
+  for (let i = 0; i < nRow; i++) {
     let columnCells: any[] = []
 
-    for (let j = 0; j < columns; j++) {
+    for (let j = 0; j < nCol; j++) {
       columnCells.push({
         type: 'table-cell',
-        children: [{ text: '' }],
+        children: [{ type: 'paragraph', children: [{ text: ' ' }] }],
       })
     }
 
@@ -35,9 +26,13 @@ export const createTableNode = () => {
   }
 }
 
-export const insertTable = (editor: CustomEditor) => {
+export const insertTable = (
+  editor: CustomEditor,
+  nRow: number,
+  nCol: number,
+) => {
   const { selection } = editor
-  const properties: any = createTableNode()
+  const properties: any = createTableNode(nRow, nCol)
 
   if (selection && Range.isCollapsed(selection)) {
     Transforms.insertNodes(editor, properties)

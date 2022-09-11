@@ -5,6 +5,12 @@ import { HeadingElement } from './Features/Headings/@types'
 import { ImageElement } from './Features/Images/@types'
 import { ListElement } from './Features/Lists/@types'
 import { TableElement } from './Features/Tables/@types'
+import { ToolbarProps } from './Toolbar/@types'
+
+export interface EditorProps extends ToolbarProps {
+  onChange: (value: {}) => void
+  value: any
+}
 
 export interface DefaultNodeProperties {
   [key: string]: CustomText[] | TextAlignment

@@ -14,21 +14,24 @@ const Select: React.ComponentType<SelectProps> = (props) => {
     name: props.name || label,
   }
 
-  const labelStyleClass = clsx('text-slate-600 capitalize block mb-3', {
-    "after:content-['*'] after:ml-1 after:text-red-500": props.required,
-  })
+  const labelStyleClass = clsx(
+    'text-header-col capitalize block mb-3 font-semibold',
+    {
+      "after:content-['*'] after:ml-1 after:text-red-500": props.required,
+    },
+  )
 
   return (
     <div>
       <label className={labelStyleClass} {...labelProps}>
-        {props.label}
+        {label && label.replace(/([a-zA-Z])(?=[A-Z])/g, '$1 ')}
       </label>
       <select
         {...inputProps}
         {...rest}
         className={clsx(
           'border-solid border border-border-col rounded-lg py-3 px-2 w-full capitalize bg-white',
-          'active:border-sky-600 shadow-sm placeholder-slate-400',
+          'active:border-sky-600 placeholder-slate-400',
           'focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500',
           'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200',
           { 'border-red-500 focus:ring-pink-500': !!errorMessage },

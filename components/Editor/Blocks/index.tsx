@@ -3,6 +3,7 @@ import { RenderElementProps } from 'slate-react'
 import { Element as TableElementBlock } from '../Features/Tables/ElementBlock'
 import { Element as ListElementBlock } from '../Features/Lists/ElementBlock'
 import { Element as HeadingElementBlock } from '../Features/Headings/ElementBlocks'
+import { Element as ImageElementBlock } from '../Features/Images/ElementBlock'
 
 export const Element = (props: RenderElementProps) => {
   const { attributes, children, element } = props
@@ -21,6 +22,7 @@ export const Element = (props: RenderElementProps) => {
           <HeadingElementBlock {...props} />
           <ListElementBlock {...props} />
           <TableElementBlock {...props} />
+          <ImageElementBlock {...props} />
         </React.Fragment>
       )
   }

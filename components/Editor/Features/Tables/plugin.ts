@@ -13,23 +13,52 @@ export const withTables = (editor: CustomEditor) => {
   const { deleteBackward, deleteForward, insertBreak, normalizeNode } = editor
 
   editor.deleteBackward = (unit) => {
-    const { selection } = editor
+    if (!editor.selection || !Range.isCollapsed(editor.selection)) {
+      return deleteBackward(unit)
+    }
 
-    if (selection && Range.isCollapsed(selection)) {
-      const [cell] = Array.from(
-        Editor.nodes(editor, {
-          match: (n) =>
-            !Editor.isEditor(n) &&
-            SlateElement.isElement(n) &&
-            n.type === 'table-cell',
-        }),
-      )
+    const [cell] = Array.from(
+      Editor.nodes(editor, {
+        match: (n) =>
+          !Editor.isEditor(n) &&
+          SlateElement.isElement(n) &&
+          n.type === 'table-cell',
+      }),
+    )
 
-      if (cell) {
-        const [, cellPath] = cell
-        const start = Editor.start(editor, cellPath)
+    if (cell) {
+      const [, cellPath] = cell
+      const start = Editor.start(editor, cellPath)
 
-        if (Point.equals(selection.anchor, start)) {
+      if (Point.equals(editor.selection.anchor, start)) {
+        return
+      }
+    }
+
+    const [paragraph] = Array.from(
+      Editor.nodes(editor, {
+        match: (n) =>
+          !Editor.isEditor(n) &&
+          SlateElement.isElement(n) &&
+          n.type === 'paragraph',
+      }),
+    )
+
+    if (paragraph) {
+      const [paragraphNode, paragraphPath] = paragraph
+
+      if (Path.hasPrevious(paragraphPath) && !Node.string(paragraphNode)) {
+        const [table] = Array.from(
+          Editor.nodes(editor, {
+            at: Path.previous(paragraphPath),
+            match: (n) =>
+              !Editor.isEditor(n) &&
+              SlateElement.isElement(n) &&
+              n.type === 'table',
+          }),
+        )
+
+        if (table) {
           return
         }
       }
@@ -65,21 +94,42 @@ export const withTables = (editor: CustomEditor) => {
   }
 
   editor.insertBreak = () => {
-    const { selection } = editor
+    if (!editor.selection || !Range.isCollapsed(editor.selection)) {
+      return insertBreak()
+    }
 
-    if (selection) {
-      const [table] = Array.from(
-        Editor.nodes(editor, {
-          match: (n) =>
-            !Editor.isEditor(n) &&
-            SlateElement.isElement(n) &&
-            n.type === 'table',
-        }),
-      )
+    const [cellParagraph] = Array.from(
+      Editor.nodes(editor, {
+        match: (n) =>
+          !Editor.isEditor(n) &&
+          SlateElement.isElement(n) &&
+          n.type === 'paragraph',
+      }),
+    )
 
-      if (table) {
-        return
-      }
+    if (cellParagraph) {
+      const [, cellParagraphPath] = cellParagraph
+      const block = { type: 'paragraph', children: [{ text: '' }] }
+
+      Transforms.insertNodes(editor, block as Node, {
+        at: Path.next(cellParagraphPath),
+        select: true,
+      })
+
+      return
+    }
+
+    const [table] = Array.from(
+      Editor.nodes(editor, {
+        match: (n) =>
+          !Editor.isEditor(n) &&
+          SlateElement.isElement(n) &&
+          n.type === 'table',
+      }),
+    )
+
+    if (table) {
+      return
     }
 
     insertBreak()

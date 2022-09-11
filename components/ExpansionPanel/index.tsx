@@ -21,16 +21,17 @@ import clsx from 'classNames'
 // context
 const ExpansionPanelContext = createContext<ExpansionPanelCtx>({
   activeIdx: 0,
-  panelsRequireResolve: false,
+  requireResolve: false,
   openPanel: false,
   resolvedPanels: [],
 })
 
 // ExpansionPanel
-const Panel: React.ComponentType<PanelProps> = ({
+const Panel: React.FC<PanelProps> = ({
   totalPanel,
   accordion = false,
   children,
+  requireResolve = false,
 }) => {
   const [activeIdx, setActiveIdx] = useState(0)
   const [resolvedPanels, setResolvedPanels] = useState<ResolvedPanel[]>([])
@@ -62,16 +63,17 @@ const Panel: React.ComponentType<PanelProps> = ({
   const ctxProps: ExpansionPanelCtx = useMemo(() => {
     return {
       expand: handleExpansion,
-      panelsRequireResolve: typeof children === 'function',
+      requireResolve,
       openPanel,
       activeIdx,
       resolvedPanels,
     }
-  }, [handleExpansion, children, openPanel, activeIdx, resolvedPanels])
+  }, [handleExpansion, openPanel, activeIdx, resolvedPanels, requireResolve])
 
   const call = (c: (args: PanelCallback) => ReactNode) => {
     return c({
-      next: () => {
+      activeIndex: openPanel ? activeIdx : -1,
+      resolver: () => {
         if (activeIdx < totalPanel - 1) {
           const nextIndex = activeIdx + 1
 
@@ -99,7 +101,7 @@ const Panel: React.ComponentType<PanelProps> = ({
 }
 
 // ExpansionPanelItem
-const Item: React.ComponentType<ItemProps> = (props) => {
+const Item: React.FC<ItemProps> = (props) => {
   const componentName = 'ItemHeader'
   const wrapperJsx = props.as || 'div'
 
@@ -107,8 +109,8 @@ const Item: React.ComponentType<ItemProps> = (props) => {
     return React.Children.map(
       props.children,
       (child) =>
-        React.isValidElement(child) &&
-        (child.type as any).name === componentName &&
+        React.isValidElement<ItemHeaderProps>(child) &&
+        (child.type as React.FC).name === componentName &&
         React.cloneElement(child, {
           __idx: props.index,
         }),
@@ -120,7 +122,7 @@ const Item: React.ComponentType<ItemProps> = (props) => {
       props.children,
       (child) =>
         React.isValidElement(child) &&
-        (child.type as any).name !== componentName &&
+        (child.type as React.FC).name !== componentName &&
         child,
     )
   }, [props.children])
@@ -149,22 +151,18 @@ const Item: React.ComponentType<ItemProps> = (props) => {
 }
 
 // ExpansionPanelItemHeader
-const ItemHeader: React.ComponentType<ItemHeaderProps> = (props) => {
+const ItemHeader: React.FC<ItemHeaderProps> = (props) => {
   const ctx = useContext(ExpansionPanelContext)
 
   const handleClick = () => {
-    if (
-      typeof props.__idx == 'number' &&
-      ctx.expand &&
-      !ctx.panelsRequireResolve
-    ) {
+    if (typeof props.__idx == 'number' && ctx.expand && !ctx.requireResolve) {
       ctx.expand(props.__idx)
     }
 
     if (
       typeof props.__idx == 'number' &&
       ctx.expand &&
-      ctx.panelsRequireResolve &&
+      ctx.requireResolve &&
       ctx.resolvedPanels.some((r) => r.idx === props.__idx && r.resolved)
     ) {
       ctx.expand(props.__idx)

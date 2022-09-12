@@ -52,11 +52,18 @@ const FileInput: React.FC<FileInputProps> = (props) => {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const file = e.target.files[0]
+      const reader = new FileReader()
 
-      setUploadedFile({
-        src: URL.createObjectURL(file),
-        fileName: file.name,
-      })
+      reader.onload = (e) => {
+        if (e.target && typeof e.target.result === 'string') {
+          setUploadedFile({
+            src: e.target.result,
+            fileName: file.name,
+          })
+        }
+      }
+
+      reader.readAsDataURL(file)
     }
 
     if (onChange) onChange(e)

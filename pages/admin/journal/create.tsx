@@ -11,6 +11,7 @@ import { GET_SUBJECT_DISCIPLINES } from '../../../graphql/queries/getSubjectDisc
 import Select from '../../../components/Select'
 import { useRouter } from 'next/router'
 import { Discipline } from '../../../@globalTypes'
+import Layout from '../../../components/Layout'
 
 interface InitialValues {
   [key: string]: string
@@ -81,63 +82,65 @@ const CreateJournalManager: NextPage<Props> = (props) => {
   }, [props.disciplines])
 
   return (
-    <main>
-      <div className="container mx-auto">
-        <div className="grid grid-cols-6">
-          <div className="col-start-1 col-span-6 md:col-start-3 md:col-span-2 p-6">
-            <span>{error && error.message}</span>
-            <h1 className="text-2xl font-bold mb-6">Create Journal</h1>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={handleSubmit}
-            >
-              {(formik) => (
-                <form onSubmit={formik.handleSubmit}>
-                  {Object.keys(initialValues).map((key) =>
-                    fieldType[key] == 'input' ? (
-                      <Input
-                        required
-                        aria-required
-                        label={key}
-                        value={formik.values[key]}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        errorMessage={
-                          formik.touched[key] ? formik.errors[key] : null
-                        }
-                        key={key}
-                      />
-                    ) : (
-                      <Select
-                        required
-                        aria-required
-                        label={key}
-                        value={formik.values[key]}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        items={selectItems}
-                        errorMessage={
-                          formik.touched[key] ? formik.errors[key] : null
-                        }
-                        key={key}
-                      ></Select>
-                    ),
-                  )}
-                  <Button
-                    type="submit"
-                    fullWidth
-                    disabled={formik.isSubmitting}
-                  >
-                    {loading ? 'loading' : 'submit'}
-                  </Button>
-                </form>
-              )}
-            </Formik>
+    <Layout>
+      <main>
+        <div className="container mx-auto">
+          <div className="grid grid-cols-6">
+            <div className="col-start-1 col-span-6 md:col-start-3 md:col-span-2 p-6">
+              <span>{error && error.message}</span>
+              <h1 className="text-2xl font-bold mb-6">Create Journal</h1>
+              <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+              >
+                {(formik) => (
+                  <form onSubmit={formik.handleSubmit}>
+                    {Object.keys(initialValues).map((key) =>
+                      fieldType[key] == 'input' ? (
+                        <Input
+                          required
+                          aria-required
+                          label={key}
+                          value={formik.values[key]}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          errorMessage={
+                            formik.touched[key] ? formik.errors[key] : null
+                          }
+                          key={key}
+                        />
+                      ) : (
+                        <Select
+                          required
+                          aria-required
+                          label={key}
+                          value={formik.values[key]}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          items={selectItems}
+                          errorMessage={
+                            formik.touched[key] ? formik.errors[key] : null
+                          }
+                          key={key}
+                        ></Select>
+                      ),
+                    )}
+                    <Button
+                      type="submit"
+                      fullWidth
+                      disabled={formik.isSubmitting}
+                    >
+                      {loading ? 'loading' : 'submit'}
+                    </Button>
+                  </form>
+                )}
+              </Formik>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </Layout>
   )
 }
 

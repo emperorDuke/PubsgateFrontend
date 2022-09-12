@@ -33,32 +33,54 @@ export interface Discipline {
 }
 
 export interface InformationHeading {
-  __typename?: string
+  __typename: 'InformationHeading'
   id: number | string
   name: string
 }
 
 export interface JournalSubjectArea {
-  __typename?: string
+  __typename: 'JournalSubjectArea'
   id: number | string
   name: string
 }
 
+export interface journalInformation {
+  __typename: 'JournalInformation'
+  id: number | string
+  content?: string | null
+  heading: Partial<InformationHeading>
+}
+
 export type PublicationFrequency =
   | 'ANNUALLY'
-  | 'BIANNUALLY'
-  | 'TRIANUALLY'
+  | 'BI_ANNUALLY'
+  | 'TRI_ANNUALLY'
   | 'QUARTERLY'
 
+export type ServerPublicationFrequency =
+  | 'bi-annually'
+  | 'tri-annually'
+  | 'annually'
+  | 'quarterly'
+
 export interface Journal {
-  [key: string]: string | PublicationFrequency | File | undefined | number
-  __typename?: string
-  id?: string | number
+  [key: string]:
+    | string
+    | PublicationFrequency
+    | ServerPublicationFrequency
+    | File
+    | undefined
+    | number
+    | null
+    | Partial<Discipline>
+  __typename: 'Journal'
+  id: string | number
   name: string
+  slug: string
   issn: string
-  discipline: string
+  discipline: Partial<Discipline> | string
   publicationStartDate: string
-  publicationFrequency: PublicationFrequency
-  isoAbbreviation: string
-  logo: File | string
+  publicationFrequency: PublicationFrequency | ServerPublicationFrequency
+  isoAbbreviation?: string | null
+  logo?: File | string | null
 }

@@ -7,55 +7,62 @@ import FileInput from '../FileInput'
 const FormBuilder: React.ComponentType<FormBuilderProps> = (props) => {
   const { formik, formSchema } = props
 
-  const getErrorMessage = (key: string) => {
-    return formik.touched[key] ? (formik.errors[key] as string) : null
+  const getErrorMessage = (field: string) => {
+    return formik.touched[field] ? (formik.errors[field] as string) : null
+  }
+
+  const handleFileChange = (field: string) => {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files) {
+        formik.setFieldValue(field, e.target.files[0])
+      }
+    }
   }
 
   return (
     <>
-      {Object.keys(formSchema).map((key) => {
-        switch (formSchema[key].fieldType) {
+      {Object.keys(formSchema).map((field) => {
+        switch (formSchema[field].fieldType) {
           case 'input':
             return (
               <Input
-                required={formSchema[key].required}
-                disabled={formSchema[key].disabled}
-                aria-required={formSchema[key].required}
-                label={key}
-                value={formik.values[key] as string}
+                required={formSchema[field].required}
+                disabled={formSchema[field].disabled}
+                aria-required={formSchema[field].required}
+                label={field}
+                value={formik.values[field] as string}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                errorMessage={getErrorMessage(key)}
-                key={key}
+                errorMessage={getErrorMessage(field)}
+                key={field}
               />
             )
           case 'select':
             return (
               <Select
-                required={formSchema[key].required}
-                aria-required={formSchema[key].required}
-                disabled={formSchema[key].disabled}
-                label={key}
-                value={formik.values[key] as string}
+                required={formSchema[field].required}
+                aria-required={formSchema[field].required}
+                disabled={formSchema[field].disabled}
+                label={field}
+                value={formik.values[field] as string}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                items={formSchema[key].selectOptions}
-                errorMessage={getErrorMessage(key)}
-                key={key}
+                items={formSchema[field].selectOptions}
+                errorMessage={getErrorMessage(field)}
+                key={field}
               ></Select>
             )
           default:
             return (
               <FileInput
-                required={formSchema[key].required}
-                disabled={formSchema[key].disabled}
-                aria-required={formSchema[key].required}
-                label={key}
-                value={formik.values[key] as string}
-                onChange={formik.handleChange}
+                required={formSchema[field].required}
+                disabled={formSchema[field].disabled}
+                aria-required={formSchema[field].required}
+                label={field}
+                onChange={handleFileChange(field)}
                 onBlur={formik.handleBlur}
-                errorMessage={getErrorMessage(key)}
-                key={key}
+                errorMessage={getErrorMessage(field)}
+                key={field}
               />
             )
         }

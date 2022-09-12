@@ -18,25 +18,34 @@ const Button: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonProps> = (
     ...rest
   } = props
 
+  const isContained = variant === 'contained'
+  const isIcon = variant === 'icon'
+  const isOutlined = variant === 'outlined'
+  const isXSmall = size === 'x-small'
+  const isSmall = size === 'small'
+  const isXLarge = size === 'x-large'
+  const isLarge = size === 'large'
+  const isMedium = size === 'medium'
+
   const styleClass = clsx(
     'border-solid border px-3 py-2 uppercase flex flex-nowrap items-center justify-center',
     {
-      'h-10 w-10': size === 'x-small' && variant === 'icon',
-      'h-11 w-11': size === 'small' && variant === 'icon',
-      'h-12 w-12': size === 'medium' && variant === 'icon',
-      'h-14 w-14': size === 'large' && variant === 'icon',
-      'h-16 w-16': size === 'x-large' && variant === 'icon',
-      'bg-primary shadow-xl border-transparent': variant === 'contained',
-      'rounded-lg hover:bg-primary-dark/80': variant === 'contained',
-      'text-white active:border-primary-light': variant === 'contained',
+      'h-10 w-10': isXSmall && isIcon,
+      'h-11 w-11': isSmall && isIcon,
+      'h-12 w-12': isMedium && isIcon,
+      'h-14 w-14': isLarge && isIcon,
+      'h-16 w-16': isXLarge && isIcon,
+      'bg-primary shadow-xl border-transparent': isContained && !link,
+      'rounded-lg hover:bg-primary-dark/80': isContained && !link,
+      'text-white active:border-primary-light': isContained && !link,
       'border-transparent rounded-lg bg-black text-white': link,
       'hover:bg-slate-500 hover:text-white active:text-primary-light': link,
       'w-full': fullWidth,
-      'border-transparent': variant === 'icon',
-      'rounded-full hover:bg-primary/20': variant === 'icon',
-      'active:border-primary-light': variant === 'icon',
-      'border-primary rounded-lg text-primary': variant === 'outlined',
-      'hover:bg-primary-light/10': variant === 'outlined',
+      'border-transparent': isIcon,
+      'rounded-full hover:bg-primary/20': isIcon,
+      'active:border-primary-light': isIcon,
+      'border-primary rounded-lg text-primary': isOutlined,
+      'hover:bg-primary-light/10': isOutlined,
     },
     props.className,
   )

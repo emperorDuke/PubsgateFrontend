@@ -9,6 +9,7 @@ import Button from '../../components/Button'
 import SearchBar from '../../components/SearchBar'
 import Filter from '../../components/Filter'
 import Select from '../../components/Select'
+import Layout from '../../components/Layout'
 
 const tabs = [
   {
@@ -56,7 +57,7 @@ const JournalsPage: NextPage = () => {
   }
 
   return (
-    <React.Fragment>
+    <Layout>
       <Head>
         <title>Find Journals or Articles | Pubsgate</title>
         <meta
@@ -246,7 +247,7 @@ const JournalsPage: NextPage = () => {
           </div>
         </div>
       </main>
-    </React.Fragment>
+    </Layout>
   )
 }
 

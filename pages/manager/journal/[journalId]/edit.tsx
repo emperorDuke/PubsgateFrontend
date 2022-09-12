@@ -1,46 +1,45 @@
-import React from 'react'
-import * as yup from 'yup'
-import { NextPage } from 'next'
 import { useMutation } from '@apollo/client'
-import { EDIT_JOURNAL } from '../../../../graphql/mutations/editJournal'
-import { Formik } from 'formik'
-import { useRouter } from 'next/router'
-import Button from '../../../../components/Button'
-import {
-  FieldSchema,
-  InformationHeading,
-  Journal,
-  JournalSubjectArea,
-} from '../../../../@globalTypes'
-import FormBuilder from '../../../../components/FormBuilder'
-import ExpansionPanel from '../../../../components/ExpansionPanel'
-import { PanelCallback } from '../../../../components/ExpansionPanel/@types'
-import { EDIT_JOURNAL_INFORMATION } from '../../../../graphql/mutations/journalInformation'
-import client from '../../../../server-apollo-client'
-import { GET_INFORMATION_HEADINGS } from '../../../../graphql/queries/getInformationHeadings'
-import Editor from '../../../../components/Editor'
-import { EDIT_JOURNAL_SUBJECT_AREA } from '../../../../graphql/mutations/journalSubjectArea'
-import Input from '../../../../components/Input'
-import { PlusIcon, XIcon } from '@heroicons/react/solid'
+import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
 import clsx from 'classNames'
+import { Formik } from 'formik'
+import { NextPage, NextPageContext } from 'next'
+import { useRouter } from 'next/router'
+import React from 'react'
 import { Descendant } from 'slate'
+import * as yup from 'yup'
+import {
+  Discipline,
+  FieldSchema,
+  Journal,
+  journalInformation,
+  JournalSubjectArea,
+  PublicationFrequency,
+  ServerPublicationFrequency,
+} from '../../../../@globalTypes'
+import Button from '../../../../components/Button'
+import Editor from '../../../../components/Editor'
+import ExpansionPanel from '../../../../components/ExpansionPanel'
+import FormBuilder from '../../../../components/FormBuilder'
+import Input from '../../../../components/Input'
+import Layout from '../../../../components/Layout'
+import { EDIT_JOURNAL } from '../../../../graphql/mutations/editJournal'
+import { EDIT_JOURNAL_INFORMATION } from '../../../../graphql/mutations/journalInformation'
+import { EDIT_JOURNAL_SUBJECT_AREA } from '../../../../graphql/mutations/journalSubjectArea'
+import { GET_JOURNAL_CREDENTIALS } from '../../../../graphql/queries/journalCredential'
+import { GET_JOURNAL_INFORMATION } from '../../../../graphql/queries/journalInformations'
 import { GET_JOURNAL_SUBJECT_AREAS } from '../../../../graphql/queries/journalSubjectAreas'
+import client from '../../../../server-apollo-client'
 
-interface JournalSectionProps {
-  panelResolver: PanelCallback['resolver']
+interface InformationSection {
+  journalInformation: journalInformation[]
 }
 
-interface InformationSection extends JournalSectionProps {
-  informationHeadings: InformationHeading[]
-}
-
-interface SubjectAreaSection extends JournalSectionProps {
+interface SubjectAreaSection {
   subjectAreas: JournalSubjectArea[]
 }
 
-interface Props {
-  informationHeadings: InformationHeading[]
-  subjectAreas: JournalSubjectArea[]
+interface JournalCredential {
+  journal: Journal
 }
 
 interface SubjectArea {
@@ -59,11 +58,20 @@ interface InfoSchema {
   error: string
 }
 
-const JournalSection: React.FC<JournalSectionProps> = (props) => {
-  const [editJournal, { error, data, loading }] = useMutation(EDIT_JOURNAL)
-  const router = useRouter()
+interface FrequencyType {
+  id: number
+  label: ServerPublicationFrequency
+  value: PublicationFrequency
+}
 
-  const publicationFrequencies = [
+interface Props {
+  subjectAreas: JournalSubjectArea[]
+  journalInformation: journalInformation[]
+  journal: Journal
+}
+
+const JournalSection: React.FC<JournalCredential> = (props) => {
+  const publicationFrequencies: FrequencyType[] = [
     {
       id: 1,
       label: 'quarterly',
@@ -71,13 +79,13 @@ const JournalSection: React.FC<JournalSectionProps> = (props) => {
     },
     {
       id: 2,
-      label: 'triannually',
-      value: 'TRIANUALLY',
+      label: 'tri-annually',
+      value: 'TRI_ANNUALLY',
     },
     {
       id: 3,
-      label: 'biannually',
-      value: 'BIANNUALLY',
+      label: 'bi-annually',
+      value: 'BI_ANNUALLY',
     },
     {
       id: 4,
@@ -86,7 +94,39 @@ const JournalSection: React.FC<JournalSectionProps> = (props) => {
     },
   ]
 
-  const handleSubmission = async (values: Journal) => {
+  const [editJournal, { error, data, loading }] = useMutation(EDIT_JOURNAL)
+  const [initialValues, setInitialValues] = React.useState({})
+  const router = useRouter()
+
+  React.useEffect(() => {
+    const excludeFields = ['id', 'slug', '__typename']
+    const values: Partial<Journal> = {}
+
+    Object.keys(props.journal)
+      .filter((key) => !excludeFields.includes(key))
+      .forEach((field) => {
+        if (field === 'discipline') {
+          values[field] = (props.journal[field] as Partial<Discipline>).name
+        } else if (field === 'publicationFrequency') {
+          values[field] = getDefaultFrequency(field)
+        } else {
+          values[field] = props.journal[field] || ''
+        }
+      })
+
+    setInitialValues(values)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.journal])
+
+  const getDefaultFrequency = (field: string): PublicationFrequency => {
+    const frequency = publicationFrequencies.find(
+      (f) => f.label === props.journal[field],
+    )
+
+    return (frequency && frequency.value) || 'BI_ANNUALLY'
+  }
+
+  const handleSubmission = async (values: Partial<Journal>) => {
     await editJournal({
       variables: {
         journalId: router.query.journalId,
@@ -98,29 +138,19 @@ const JournalSection: React.FC<JournalSectionProps> = (props) => {
   const validationSchema = yup.object({
     publicationStartDate: yup.date().notRequired().nullable(),
     isoAbbreviation: yup.string().notRequired(),
+    logo: yup.mixed().notRequired(),
     publicationFrequency: yup
       .string()
       .oneOf(publicationFrequencies.map((f) => f.value))
       .notRequired(),
-    logo: yup.mixed().notRequired(),
   })
-
-  const initialValue: Journal = {
-    name: '',
-    issn: '',
-    discipline: '',
-    publicationStartDate: new Date().toLocaleDateString(),
-    publicationFrequency: 'ANNUALLY',
-    isoAbbreviation: '',
-    logo: '',
-  }
 
   const schema = {
     disabled: false,
     required: true,
   }
 
-  const journalFieldType: FieldSchema<Journal> = {
+  const journalFieldType: FieldSchema<Partial<Journal>> = {
     logo: {
       fieldType: 'file',
       ...schema,
@@ -150,8 +180,8 @@ const JournalSection: React.FC<JournalSectionProps> = (props) => {
     },
     publicationFrequency: {
       fieldType: 'select',
-      ...schema,
       selectOptions: publicationFrequencies,
+      ...schema,
     },
   }
 
@@ -160,20 +190,22 @@ const JournalSection: React.FC<JournalSectionProps> = (props) => {
       <div className="col-start-1 col-span-6 md:col-start-2 md:col-span-4 p-6">
         <p>{error && error.message}</p>
         <h2 className="text-xl font-bold mb-6">Edit Credentials</h2>
-        <Formik
-          initialValues={initialValue}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmission}
-        >
-          {(formik) => (
-            <form onSubmit={formik.handleSubmit}>
-              <FormBuilder formik={formik} formSchema={journalFieldType} />
-              <Button type="submit" fullWidth disabled={formik.isSubmitting}>
-                {loading ? 'loading' : 'submit'}
-              </Button>
-            </form>
-          )}
-        </Formik>
+        {initialValues && Object.keys(initialValues).length && (
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmission}
+          >
+            {(formik) => (
+              <form onSubmit={formik.handleSubmit}>
+                <FormBuilder formik={formik} formSchema={journalFieldType} />
+                <Button type="submit" fullWidth disabled={formik.isSubmitting}>
+                  {loading ? 'loading' : 'submit'}
+                </Button>
+              </form>
+            )}
+          </Formik>
+        )}
       </div>
     </div>
   )
@@ -185,44 +217,51 @@ const JournalInfoSection: React.FC<InformationSection> = (props) => {
   const [sections, setSections] = React.useState<InfoSchema[]>([])
 
   React.useEffect(() => {
-    setSections(
-      props.informationHeadings.map((heading) => {
-        return {
-          id: heading.id,
-          name: heading.name,
-          error: '',
-          value: [
-            {
-              type: 'paragraph',
-              children: [{ text: '' }],
-            } as Descendant,
-          ],
-        }
-      }),
-    )
-  }, [setSections, props.informationHeadings])
+    if (props.journalInformation && props.journalInformation.length) {
+      setSections(
+        props.journalInformation.map((info) => {
+          return {
+            id: info.id,
+            name: info.heading.name || '',
+            error: '',
+            value: (info.content && JSON.parse(info.content)) || [
+              {
+                type: 'paragraph',
+                children: [{ text: '' }],
+              },
+            ],
+          }
+        }),
+      )
+    }
+  }, [setSections, props.journalInformation])
 
-  const hasError = () => {
-    return sections.some(
-      (s: any) =>
-        !s.value[0].children[0].text || s.value[0].children[0].text.length < 20,
-    )
-  }
-
-  const updateErrorSection = () => {
-    setSections((sections) =>
-      sections.map((s: any) => {
+  const errorChecker = () => {
+    const hasError = ({ value }: InfoSchema) => {
+      return value.every(({ children }) => {
         if (
-          !s.value[0].children[0].text ||
-          s.value[0].children[0].text.length < 20
+          children &&
+          typeof children !== 'boolean' &&
+          typeof children !== 'string'
         ) {
-          s.error = `${s.name} is required`
-          return s
+          return children.every(({ text }) => !text && text.length < 50)
+        } else {
+          return true
+        }
+      })
+    }
+
+    return {
+      hasError: sections.some((section) => hasError(section)),
+      nextSections: sections.map((section) => {
+        if (hasError(section)) {
+          section.error = `${section.name} is required`
+          return section
         }
 
-        return s
+        return section
       }),
-    )
+    }
   }
 
   const getValues = () => {
@@ -237,9 +276,10 @@ const JournalInfoSection: React.FC<InformationSection> = (props) => {
   const handleSubmission = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (hasError()) {
-      updateErrorSection()
+    const error = errorChecker()
 
+    if (error.hasError) {
+      setSections(error.nextSections)
       return
     }
 
@@ -253,38 +293,34 @@ const JournalInfoSection: React.FC<InformationSection> = (props) => {
 
   const handleChange = (id: number | string) => (value: Descendant[]) => {
     setSections((sections) =>
-      sections.map((s) =>
-        id === s.id
-          ? {
-              ...s,
-              value,
-            }
-          : s,
-      ),
+      sections.map((section) => {
+        if (id === section.id) {
+          return {
+            ...section,
+            value,
+          }
+        }
+        return section
+      }),
     )
   }
 
   return (
     <div className="grid grid-cols-6 bg-layout-col rounded-b-lg border border-border-col">
       <div className="col-start-1 col-span-6 md:col-start-2 md:col-span-4 p-3">
-        <h2 className="text-2xl font-bold mb-6">Edit information</h2>
+        <h2 className="text-xl font-bold mb-6">Edit information</h2>
         <form onSubmit={handleSubmission}>
           {sections.map((section) => (
             <div key={section.id}>
-              <label
-                htmlFor={section.name}
-                className="text-header-col capitalize block mb-3 font-semibold"
-              >
+              <p className="text-header-col capitalize block mb-3 font-semibold">
                 {section.name}
-              </label>
-              <div id={section.name}>
-                <Editor
-                  onChange={handleChange(section.id)}
-                  value={section.value}
-                  size="small"
-                  variant="minimal"
-                />
-              </div>
+              </p>
+              <Editor
+                onChange={handleChange(section.id)}
+                value={section.value}
+                size="small"
+                variant="minimal"
+              />
               <p className="h-4 mb-3 text-xs capitalize text-red-500 p-1">
                 {section.error || (ops.error && ops.error.message)}
               </p>
@@ -342,20 +378,20 @@ const SubjectAreaSection: React.FC<SubjectAreaSection> = (props) => {
   const handleChange = (id: number | string) => {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       setSubjectArea((subjectAreas) =>
-        subjectAreas.map((v) => {
-          if (v.id === id) {
-            v.name = e.target.value
-            v.error = ''
+        subjectAreas.map((area) => {
+          if (area.id === id) {
+            area.name = e.target.value
+            area.error = ''
           }
 
-          return v
+          return area
         }),
       )
     }
   }
 
   const addSubjectArea = (e?: React.MouseEvent<HTMLButtonElement>) => {
-    e && e.preventDefault()
+    if (e) e.preventDefault()
 
     const errorId = checkError().id
 
@@ -418,12 +454,12 @@ const SubjectAreaSection: React.FC<SubjectAreaSection> = (props) => {
 
   const insertError = (id: number | string) => {
     setSubjectArea((areas) =>
-      areas.map((v) => {
-        if (v.id === id) {
-          v.error = 'Field is empty'
+      areas.map((area) => {
+        if (area.id === id) {
+          area.error = 'Field is empty'
         }
 
-        return v
+        return area
       }),
     )
   }
@@ -480,10 +516,9 @@ const SubjectAreaSection: React.FC<SubjectAreaSection> = (props) => {
                   <Button
                     variant="icon"
                     className="ml-1"
-                    size="x-small"
                     onClick={deleteSubjectArea(value.id)}
                   >
-                    <XIcon />
+                    <XCircleIcon className="text-header-col" />
                   </Button>
                 }
               />
@@ -514,81 +549,152 @@ const EditJournalPage: NextPage<Props> = (props) => {
   ]
 
   return (
-    <main>
-      <div className="container mx-auto">
-        <h1 className="text-3xl font-bold my-6 text-header-col">
-          Journal Management Settings
-        </h1>
-        <div className="grid grid-cols-6">
-          <div className="col-start-1 col-span-6 md:col-start-2 md:col-span-4 p-6">
-            <ExpansionPanel totalPanel={3} accordion>
-              {({ resolver, activeIndex }) => (
-                <>
-                  <ExpansionPanel.Item index={0}>
-                    <ExpansionPanel.Header
-                      className={clsx(cssClassNames, {
-                        'rounded-t-lg': activeIndex === 0,
-                        'rounded-lg': activeIndex !== 0,
-                      })}
-                    >
-                      Journal credentials
-                    </ExpansionPanel.Header>
-                    <JournalSection panelResolver={resolver} />
-                  </ExpansionPanel.Item>
+    <Layout>
+      <main>
+        <div className="container mx-auto">
+          <h1 className="text-3xl font-bold my-6 text-header-col">
+            Journal Management Settings
+          </h1>
+          <div className="grid grid-cols-6">
+            <div className="col-start-1 col-span-6 md:col-start-2 md:col-span-4 p-6">
+              <ExpansionPanel totalPanel={3} accordion>
+                {({ activeIndex }) => (
+                  <>
+                    <ExpansionPanel.Item index={0}>
+                      <ExpansionPanel.Header
+                        className={clsx(cssClassNames, {
+                          'rounded-t-lg': activeIndex === 0,
+                          'rounded-lg': activeIndex !== 0,
+                        })}
+                      >
+                        Journal credentials
+                      </ExpansionPanel.Header>
+                      <JournalSection journal={props.journal} />
+                    </ExpansionPanel.Item>
 
-                  <ExpansionPanel.Item index={1}>
-                    <ExpansionPanel.Header
-                      className={clsx(cssClassNames, {
-                        'rounded-t-lg': activeIndex === 1,
-                        'rounded-lg': activeIndex !== 1,
-                      })}
-                    >
-                      Journal information
-                    </ExpansionPanel.Header>
-                    <JournalInfoSection
-                      panelResolver={resolver}
-                      informationHeadings={props.informationHeadings}
-                    />
-                  </ExpansionPanel.Item>
+                    <ExpansionPanel.Item index={1}>
+                      <ExpansionPanel.Header
+                        className={clsx(cssClassNames, {
+                          'rounded-t-lg': activeIndex === 1,
+                          'rounded-lg': activeIndex !== 1,
+                        })}
+                      >
+                        Journal information
+                      </ExpansionPanel.Header>
+                      <JournalInfoSection
+                        journalInformation={props.journalInformation}
+                      />
+                    </ExpansionPanel.Item>
 
-                  <ExpansionPanel.Item index={2}>
-                    <ExpansionPanel.Header
-                      className={clsx(cssClassNames, {
-                        'rounded-t-lg': activeIndex === 2,
-                        'rounded-lg': activeIndex !== 2,
-                      })}
-                    >
-                      Journal subject areas
-                    </ExpansionPanel.Header>
-                    <SubjectAreaSection
-                      panelResolver={resolver}
-                      subjectAreas={props.subjectAreas}
-                    />
-                  </ExpansionPanel.Item>
-                </>
-              )}
-            </ExpansionPanel>
+                    <ExpansionPanel.Item index={2}>
+                      <ExpansionPanel.Header
+                        className={clsx(cssClassNames, {
+                          'rounded-t-lg': activeIndex === 2,
+                          'rounded-lg': activeIndex !== 2,
+                        })}
+                      >
+                        Journal subject areas
+                      </ExpansionPanel.Header>
+                      <SubjectAreaSection subjectAreas={props.subjectAreas} />
+                    </ExpansionPanel.Item>
+                  </>
+                )}
+              </ExpansionPanel>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </Layout>
   )
 }
 
 export default EditJournalPage
 
-export const getServerSideProps = async (): Promise<{ props: Props }> => {
-  const {
-    data: { informationHeadings },
-  } = await client().query({
-    query: GET_INFORMATION_HEADINGS,
-  })
-
+export const getServerSideProps = async (
+  ctx: NextPageContext,
+): Promise<{ props: Props }> => {
   // const {
   //   data: { subjectAreas },
   // } = await client().query({
   //   query: GET_JOURNAL_SUBJECT_AREAS,
   // })
 
-  return { props: { informationHeadings, subjectAreas: [] } }
+  // const {
+  //   data: { journalInformation },
+  // } = await client().query({
+  //   query: GET_JOURNAL_INFORMATION,
+  //   variables: {
+  //     journalId: ctx.query.journalId,
+  //   },
+  // })
+
+  // const {
+  //   data: { journal },
+  // } = await client().query({
+  //   query: GET_JOURNAL_CREDENTIALS,
+  //   variables: {
+  //     id: ctx.query.journalId,
+  //   },
+  // })
+
+  return {
+    props: {
+      subjectAreas: [
+        {
+          __typename: 'JournalSubjectArea',
+          id: '2424',
+          name: 'cell biology',
+        },
+      ],
+      journalInformation: [
+        {
+          __typename: 'JournalInformation',
+          id: '1',
+          content: JSON.stringify([
+            {
+              type: 'paragraph',
+              children: [{ text: 'we are the best in the world', bold: true }],
+            },
+          ]),
+          heading: {
+            id: '1',
+            name: 'about',
+          },
+        },
+        {
+          __typename: 'JournalInformation',
+          id: '2',
+          content: null,
+          heading: {
+            id: '2',
+            name: 'aims and scope',
+          },
+        },
+        {
+          __typename: 'JournalInformation',
+          id: '3',
+          content: null,
+          heading: {
+            id: '3',
+            name: 'author guidelines',
+          },
+        },
+      ],
+      journal: {
+        __typename: 'Journal',
+        id: '345-6646mi-646',
+        name: 'biofuel',
+        slug: 'biofuel',
+        issn: '1234-4576',
+        publicationStartDate: new Date().toISOString().split('T')[0],
+        publicationFrequency: 'bi-annually',
+        discipline: {
+          id: 3,
+          name: 'life science',
+        },
+        isoAbbreviation: null,
+        logo: null,
+      },
+    },
+  }
 }

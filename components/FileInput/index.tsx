@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { FileInputProps } from './@types'
 import clsx from 'classNames'
 import Image from 'next/image'
@@ -7,10 +7,19 @@ interface UploadedFile {
   src: string
   fileName: string
 }
+
 const FileInput: React.FC<FileInputProps> = (props) => {
-  const [uploadedFile, setUploadedFile] = React.useState<UploadedFile | null>(
-    null,
-  )
+  const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null)
+
+  useEffect(() => {
+    if (props.value && typeof props.value === 'string') {
+      setUploadedFile({
+        src: props.value,
+        fileName: 'remote-logo',
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const {
     required,
@@ -41,8 +50,6 @@ const FileInput: React.FC<FileInputProps> = (props) => {
   )
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange && onChange(e)
-
     if (e.target.files) {
       const file = e.target.files[0]
 
@@ -51,6 +58,8 @@ const FileInput: React.FC<FileInputProps> = (props) => {
         fileName: file.name,
       })
     }
+
+    if (onChange) onChange(e)
   }
 
   return (

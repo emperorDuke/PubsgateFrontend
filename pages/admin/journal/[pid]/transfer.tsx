@@ -9,6 +9,7 @@ import client from '../../../../server-apollo-client'
 import { GET_EDITOR } from '../../../../graphql/queries/getEditor'
 import { Editor } from '../../../../@globalTypes'
 import { TRANSFER_JOURNAL } from '../../../../graphql/mutations/transferJournal'
+import Layout from '../../../../components/Layout'
 
 interface InitialValues {
   [key: string]: string | undefined
@@ -52,44 +53,46 @@ const TransferControlPage: NextPage<Props> = (props) => {
   }
 
   return (
-    <main>
-      <div className="container mx-auto">
-        <div className="grid grid-cols-6">
-          <div className="col-start-1 col-span-6 md:col-start-3 md:col-span-2 p-6">
-            <span>{error && error.message}</span>
-            <h1 className="text-2xl font-bold mb-6">Transfer management</h1>
-            <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-              {(formik) => (
-                <form onSubmit={formik.handleSubmit}>
-                  {Object.keys(initialValues).map((key) => (
-                    <Input
-                      required
-                      disabled
-                      aria-required
-                      label={key}
-                      value={formik.values[key]}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      errorMessage={
-                        formik.touched[key] ? formik.errors[key] : null
-                      }
-                      key={key}
-                    />
-                  ))}
-                  <Button
-                    type="submit"
-                    fullWidth
-                    disabled={formik.isSubmitting}
-                  >
-                    {loading ? 'loading' : 'transfer'}
-                  </Button>
-                </form>
-              )}
-            </Formik>
+    <Layout>
+      <main>
+        <div className="container mx-auto">
+          <div className="grid grid-cols-6">
+            <div className="col-start-1 col-span-6 md:col-start-3 md:col-span-2 p-6">
+              <span>{error && error.message}</span>
+              <h1 className="text-2xl font-bold mb-6">Transfer management</h1>
+              <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+                {(formik) => (
+                  <form onSubmit={formik.handleSubmit}>
+                    {Object.keys(initialValues).map((key) => (
+                      <Input
+                        required
+                        disabled
+                        aria-required
+                        label={key}
+                        value={formik.values[key]}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        errorMessage={
+                          formik.touched[key] ? formik.errors[key] : null
+                        }
+                        key={key}
+                      />
+                    ))}
+                    <Button
+                      type="submit"
+                      fullWidth
+                      disabled={formik.isSubmitting}
+                    >
+                      {loading ? 'loading' : 'transfer'}
+                    </Button>
+                  </form>
+                )}
+              </Formik>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </Layout>
   )
 }
 

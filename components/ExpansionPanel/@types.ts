@@ -1,8 +1,12 @@
 import React from 'react'
 
 export interface PanelCallback {
+  /**
+   * called to Resolve panel
+   */
   resolver: () => void
-  activeIndex: number
+  /** Checks if index is active */
+  isActive: (idx: number) => boolean
 }
 
 export interface ResolvedPanel {
@@ -11,11 +15,10 @@ export interface ResolvedPanel {
 }
 
 export interface ExpansionPanelCtx {
-  expand?: (args: number) => void
-  activeIdx: number
+  expand: (args: number) => void
   requireResolve: boolean
   resolvedPanels: ResolvedPanel[]
-  openPanel: boolean
+  activeIdxes: number[]
 }
 
 export interface PanelProps {

@@ -1,7 +1,6 @@
 import React, {
   useState,
   useEffect,
-  createContext,
   ReactNode,
   useContext,
   useMemo,
@@ -17,14 +16,7 @@ import {
 } from './@types'
 import { ChevronDownIcon } from '@heroicons/react/solid'
 import clsx from 'classNames'
-
-// context
-const ExpansionPanelContext = createContext<ExpansionPanelCtx>({
-  activeIdx: 0,
-  requireResolve: false,
-  openPanel: false,
-  resolvedPanels: [],
-})
+import { ExpansionPanelContext } from './context'
 
 // ExpansionPanel
 const Panel: React.FC<PanelProps> = ({
@@ -33,51 +25,60 @@ const Panel: React.FC<PanelProps> = ({
   children,
   requireResolve = false,
 }) => {
-  const [activeIdx, setActiveIdx] = useState(0)
   const [resolvedPanels, setResolvedPanels] = useState<ResolvedPanel[]>([])
-  const [openPanel, setOpenPanel] = useState(false)
+  const [activeIdxes, setActiveIdxes] = useState<number[]>([])
 
   useEffect(() => {
-    children
     setResolvedPanels(
       [...Array(totalPanel)].map((p, i) => ({
         idx: i,
         resolved: i === 0,
       })),
     )
-  }, [totalPanel, children])
+  }, [totalPanel])
 
   useEffect(() => {
-    if (accordion) setOpenPanel(true)
-  }, [accordion, setOpenPanel])
+    if (accordion) {
+      setActiveIdxes([0])
+    }
+  }, [accordion, setActiveIdxes])
 
   const handleExpansion = useCallback(
-    (idx: number) => {
-      setActiveIdx(idx)
-
-      if (!accordion) setOpenPanel(!openPanel)
+    (index: number) => {
+      if (accordion) {
+        setActiveIdxes([index])
+      } else {
+        setActiveIdxes((idxes) =>
+          idxes.includes(index)
+            ? idxes.filter((idx) => idx !== index)
+            : idxes.concat([index]),
+        )
+      }
     },
-    [setOpenPanel, setActiveIdx, accordion, openPanel],
+    [accordion, setActiveIdxes],
   )
 
   const ctxProps: ExpansionPanelCtx = useMemo(() => {
     return {
       expand: handleExpansion,
       requireResolve,
-      openPanel,
-      activeIdx,
       resolvedPanels,
+      activeIdxes,
     }
-  }, [handleExpansion, openPanel, activeIdx, resolvedPanels, requireResolve])
+  }, [handleExpansion, resolvedPanels, requireResolve, activeIdxes])
 
   const call = (c: (args: PanelCallback) => ReactNode) => {
     return c({
-      activeIndex: openPanel ? activeIdx : -1,
+      isActive: (idx: number) => {
+        return !!(activeIdxes.length && activeIdxes.includes(idx))
+      },
       resolver: () => {
-        if (activeIdx < totalPanel - 1) {
+        const activeIdx = activeIdxes.pop()
+
+        if (activeIdx && activeIdx < totalPanel - 1) {
           const nextIndex = activeIdx + 1
 
-          setActiveIdx(nextIndex)
+          setActiveIdxes([nextIndex])
           setResolvedPanels(
             resolvedPanels.map((p) => {
               if (p.idx === nextIndex) {
@@ -136,10 +137,8 @@ const Item: React.FC<ItemProps> = (props) => {
             wrapperJsx,
             {
               className: clsx('w-auto', props.className, {
-                block: ctx.activeIdx === props.index && ctx.openPanel,
-                hidden:
-                  ctx.activeIdx !== props.index ||
-                  (ctx.activeIdx === props.index && !ctx.openPanel),
+                block: ctx.activeIdxes.includes(props.index),
+                hidden: !ctx.activeIdxes.includes(props.index),
               }),
             },
             children,
@@ -155,13 +154,12 @@ const ItemHeader: React.FC<ItemHeaderProps> = (props) => {
   const ctx = useContext(ExpansionPanelContext)
 
   const handleClick = () => {
-    if (typeof props.__idx == 'number' && ctx.expand && !ctx.requireResolve) {
+    if (typeof props.__idx == 'number' && !ctx.requireResolve) {
       ctx.expand(props.__idx)
     }
 
     if (
       typeof props.__idx == 'number' &&
-      ctx.expand &&
       ctx.requireResolve &&
       ctx.resolvedPanels.some((r) => r.idx === props.__idx && r.resolved)
     ) {
@@ -169,7 +167,8 @@ const ItemHeader: React.FC<ItemHeaderProps> = (props) => {
     }
   }
 
-  const rotateChevronIcon = ctx.activeIdx === props.__idx && ctx.openPanel
+  const rotateChevronIcon =
+    typeof props.__idx == 'number' && ctx.activeIdxes.includes(props.__idx)
 
   return (
     <button

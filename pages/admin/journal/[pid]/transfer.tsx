@@ -23,6 +23,8 @@ interface Props {
   editor: Editor
 }
 
+type ServerSideProps = (ctx: NextPageContext) => Promise<{ props: Props }>
+
 const TransferControlPage: NextPage<Props> = (props) => {
   const [transferControl, { data, loading, error }] = useMutation(
     TRANSFER_JOURNAL,
@@ -96,9 +98,7 @@ const TransferControlPage: NextPage<Props> = (props) => {
   )
 }
 
-export const getServerSideProps = async (
-  ctx: NextPageContext,
-): Promise<{ props: Props }> => {
+export const getServerSideProps: ServerSideProps = async (ctx) => {
   const { data } = await client(ctx).query({
     query: GET_EDITOR,
     variables: { id: ctx.query.editorId },

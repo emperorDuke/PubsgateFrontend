@@ -21,7 +21,8 @@ module.exports = {
           DEFAULT: colors.slate['600']
         },
         'border-col': {
-          DEFAULT: colors.gray["300"]
+          DEFAULT: colors.gray["300"],
+          dark: colors.gray['400']
         }
       }
     }

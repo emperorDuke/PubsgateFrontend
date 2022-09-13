@@ -545,7 +545,25 @@ const EditJournalPage: NextPage<Props> = (props) => {
     'text-2xl font-bold mb-1',
     'bg-layout-col p-3 text-header-col',
     'border border-border-col',
-    'active:border-black',
+    'active:border-secondary',
+    'hover:border-border-col-dark',
+  ]
+
+  const panels = [
+    {
+      title: 'Journal credentials',
+      component: <JournalSection journal={props.journal} />,
+    },
+    {
+      title: 'Journal information',
+      component: (
+        <JournalInfoSection journalInformation={props.journalInformation} />
+      ),
+    },
+    {
+      title: 'Journal subject areas',
+      component: <SubjectAreaSection subjectAreas={props.subjectAreas} />,
+    },
   ]
 
   return (
@@ -557,46 +575,22 @@ const EditJournalPage: NextPage<Props> = (props) => {
           </h1>
           <div className="grid grid-cols-6">
             <div className="col-start-1 col-span-6 md:col-start-2 md:col-span-4 p-6">
-              <ExpansionPanel totalPanel={3} accordion>
-                {({ activeIndex }) => (
+              <ExpansionPanel totalPanel={panels.length} accordion>
+                {({ isActive }) => (
                   <>
-                    <ExpansionPanel.Item index={0}>
-                      <ExpansionPanel.Header
-                        className={clsx(cssClassNames, {
-                          'rounded-t-lg': activeIndex === 0,
-                          'rounded-lg': activeIndex !== 0,
-                        })}
-                      >
-                        Journal credentials
-                      </ExpansionPanel.Header>
-                      <JournalSection journal={props.journal} />
-                    </ExpansionPanel.Item>
-
-                    <ExpansionPanel.Item index={1}>
-                      <ExpansionPanel.Header
-                        className={clsx(cssClassNames, {
-                          'rounded-t-lg': activeIndex === 1,
-                          'rounded-lg': activeIndex !== 1,
-                        })}
-                      >
-                        Journal information
-                      </ExpansionPanel.Header>
-                      <JournalInfoSection
-                        journalInformation={props.journalInformation}
-                      />
-                    </ExpansionPanel.Item>
-
-                    <ExpansionPanel.Item index={2}>
-                      <ExpansionPanel.Header
-                        className={clsx(cssClassNames, {
-                          'rounded-t-lg': activeIndex === 2,
-                          'rounded-lg': activeIndex !== 2,
-                        })}
-                      >
-                        Journal subject areas
-                      </ExpansionPanel.Header>
-                      <SubjectAreaSection subjectAreas={props.subjectAreas} />
-                    </ExpansionPanel.Item>
+                    {panels.map((panel, i) => (
+                      <ExpansionPanel.Item index={i} key={panel.title}>
+                        <ExpansionPanel.Header
+                          className={clsx(...cssClassNames, {
+                            'rounded-t-lg': isActive(i),
+                            'rounded-lg': !isActive(i),
+                          })}
+                        >
+                          {panel.title}
+                        </ExpansionPanel.Header>
+                        {panel.component}
+                      </ExpansionPanel.Item>
+                    ))}
                   </>
                 )}
               </ExpansionPanel>
@@ -615,13 +609,13 @@ export const getServerSideProps = async (
 ): Promise<{ props: Props }> => {
   // const {
   //   data: { subjectAreas },
-  // } = await client().query({
+  // } = await client(ctx).query({
   //   query: GET_JOURNAL_SUBJECT_AREAS,
   // })
 
   // const {
   //   data: { journalInformation },
-  // } = await client().query({
+  // } = await client(ctx).query({
   //   query: GET_JOURNAL_INFORMATION,
   //   variables: {
   //     journalId: ctx.query.journalId,
@@ -630,7 +624,7 @@ export const getServerSideProps = async (
 
   // const {
   //   data: { journal },
-  // } = await client().query({
+  // } = await client(ctx).query({
   //   query: GET_JOURNAL_CREDENTIALS,
   //   variables: {
   //     id: ctx.query.journalId,

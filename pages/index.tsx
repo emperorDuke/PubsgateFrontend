@@ -109,14 +109,14 @@ const Home: NextPage<Props> = (props) => {
         </div>
         <div className="container mx-auto px-3">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-1 md:gap-6 mt-6">
-            <div className=" col-span-2">
+            <section className=" col-span-2">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-600">
                 Explore by subjects
               </h2>
               <div className="rounded-xl">
                 <SubjectNavigation subjects={props.disciplines} />
               </div>
-            </div>
+            </section>
             <div className="col-span-3 w-full">
               <div className="flex flex-col flex-nowrap">
                 {
@@ -184,7 +184,7 @@ const Home: NextPage<Props> = (props) => {
             </div>
           </div>
           {/** Latest articles start */}
-          <div className="mt-6">
+          <section className="mt-6">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-600">
               Recent articles
             </h2>
@@ -223,7 +223,7 @@ const Home: NextPage<Props> = (props) => {
                 </Link>
               ))}
             </div>
-          </div>
+          </section>
           {/** latest articles end */}
 
           <div className="mt-6">

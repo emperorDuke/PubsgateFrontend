@@ -1,5 +1,6 @@
-import React from "react";
+import React from 'react'
 
 export interface LayoutProps {
-    children: React.ReactNode
+  children: React.ReactNode
+  variant?: 1 | 2
 }

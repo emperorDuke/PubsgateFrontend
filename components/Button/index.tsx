@@ -14,6 +14,8 @@ const Button: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonProps> = (
     rightIcon,
     children,
     link,
+    className,
+    type = 'button',
     size = 'medium',
     ...rest
   } = props
@@ -28,26 +30,32 @@ const Button: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonProps> = (
   const isMedium = size === 'medium'
 
   const styleClass = clsx(
-    'border-solid border px-3 py-2 uppercase flex flex-nowrap items-center justify-center',
+    'border-solid border uppercase',
+    'flex flex-nowrap items-center justify-center',
     {
       'h-10 w-10': isXSmall && isIcon,
       'h-11 w-11': isSmall && isIcon,
       'h-12 w-12': isMedium && isIcon,
       'h-14 w-14': isLarge && isIcon,
       'h-16 w-16': isXLarge && isIcon,
-      'bg-primary shadow-xl border-transparent': isContained && !link,
+      'px-2 py-1 text-xs': isXSmall && (isContained || isOutlined),
+      'px-2 py-2 text-sm': isSmall && (isContained || isOutlined),
+      'px-3 py-2': isMedium && (isContained || isOutlined),
+      'px-3 py-3 text-xl': isLarge && (isContained || isOutlined),
+      'px-4 py-3 text-2xl': isXLarge && (isContained || isOutlined),
+      'bg-primary drop-shadow-md shadow-sm shadow-gray-500 border-transparent':
+        isContained && !link,
       'rounded-lg hover:bg-primary-dark/80': isContained && !link,
       'text-white active:border-primary-light': isContained && !link,
       'border-transparent rounded-lg bg-secondary text-white': link,
-      'hover:secondary-light hover:text-white active:text-primary-light': link,
+      'hover:bg-secondary-light hover:text-white active:border-border-col': link,
       'w-full': fullWidth,
-      'border-transparent': isIcon,
-      'rounded-full hover:bg-primary/20': isIcon,
-      'active:border-primary-light': isIcon,
+      'border-transparent rounded-full': isIcon,
+      'hover:bg-primary/20 active:bg-primary-light/40': isIcon,
       'border-primary rounded-lg text-primary': isOutlined,
-      'hover:bg-primary-light/10': isOutlined,
+      'hover:bg-primary-light/10 active:bg-primary-light/20': isOutlined,
     },
-    props.className,
+    className,
   )
 
   const childrenWithIcon = (
@@ -63,7 +71,7 @@ const Button: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonProps> = (
       <a className={styleClass}>{childrenWithIcon}</a>
     </Link>
   ) : (
-    <button {...rest} className={styleClass} ref={ref}>
+    <button {...rest} type={type} className={styleClass} ref={ref}>
       {childrenWithIcon}
     </button>
   )

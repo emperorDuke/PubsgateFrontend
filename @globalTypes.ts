@@ -1,3 +1,5 @@
+import { NextPageContext } from 'next'
+
 export interface FormSchema {
   fieldType: 'select' | 'input' | 'file'
   disabled: boolean
@@ -8,6 +10,10 @@ export interface FormSchema {
 export type FieldSchema<P> = {
   [K in keyof P]: Readonly<FormSchema>
 }
+
+export type ServerProps<T extends {}> = (
+  ctx: NextPageContext,
+) => Promise<{ props: T }>
 
 export interface Editor {
   __typename?: string
@@ -83,4 +89,5 @@ export interface Journal {
   publicationFrequency: PublicationFrequency | ServerPublicationFrequency
   isoAbbreviation?: string | null
   logo?: File | string | null
+  editorLastLogin?: string
 }

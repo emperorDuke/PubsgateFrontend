@@ -126,7 +126,6 @@ const JournalsPage: NextPage = () => {
                 <Tab.List className="space-x-3">
                   {tabs.map((t) => (
                     <Tab
-                      as="button"
                       key={t.label}
                       className="uppercase border-solid border border-transparent bg-black text-white p-3 rounded-t-lg active:border-slate-300 hover:bg-slate-500"
                     >

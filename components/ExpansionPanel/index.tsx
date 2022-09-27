@@ -8,7 +8,7 @@ import React, {
 } from 'react'
 import {
   ExpansionPanelCtx,
-  ItemHeaderProps,
+  ItemButtonProps,
   ItemProps,
   PanelCallback,
   PanelProps,
@@ -24,6 +24,7 @@ const Panel: React.FC<PanelProps> = ({
   accordion = false,
   children,
   requireResolve = false,
+  as = React.Fragment,
 }) => {
   const [resolvedPanels, setResolvedPanels] = useState<ResolvedPanel[]>([])
   const [activeIdxes, setActiveIdxes] = useState<number[]>([])
@@ -96,21 +97,25 @@ const Panel: React.FC<PanelProps> = ({
 
   return (
     <ExpansionPanelContext.Provider value={ctxProps}>
-      {typeof children == 'function' ? call(children) : children}
+      {React.createElement(
+        as,
+        {},
+        typeof children == 'function' ? call(children) : children,
+      )}
     </ExpansionPanelContext.Provider>
   )
 }
 
 // ExpansionPanelItem
 const Item: React.FC<ItemProps> = (props) => {
-  const componentName = 'ItemHeader'
+  const componentName = 'ItemButton'
   const wrapperJsx = props.as || 'div'
 
   const panelHeader = useMemo(() => {
     return React.Children.map(
       props.children,
       (child) =>
-        React.isValidElement<ItemHeaderProps>(child) &&
+        React.isValidElement<ItemButtonProps>(child) &&
         (child.type as React.FC).name === componentName &&
         React.cloneElement(child, {
           __idx: props.index,
@@ -131,11 +136,14 @@ const Item: React.FC<ItemProps> = (props) => {
   return (
     <ExpansionPanelContext.Consumer>
       {(ctx) => (
-        <section className="mb-3">
+        <>
           {panelHeader}
           {React.createElement(
             wrapperJsx,
             {
+              id: 'expansion-panel-item',
+              role: 'region',
+              'aria-labelledby': 'expansion-panel-btn',
               className: clsx('w-auto', props.className, {
                 block: ctx.activeIdxes.includes(props.index),
                 hidden: !ctx.activeIdxes.includes(props.index),
@@ -143,15 +151,16 @@ const Item: React.FC<ItemProps> = (props) => {
             },
             children,
           )}
-        </section>
+        </>
       )}
     </ExpansionPanelContext.Consumer>
   )
 }
 
 // ExpansionPanelItemHeader
-const ItemHeader: React.FC<ItemHeaderProps> = (props) => {
+const ItemButton: React.FC<ItemButtonProps> = (props) => {
   const ctx = useContext(ExpansionPanelContext)
+  const btnTag = props.as || 'button'
 
   const handleClick = () => {
     if (typeof props.__idx == 'number' && !ctx.requireResolve) {
@@ -167,30 +176,48 @@ const ItemHeader: React.FC<ItemHeaderProps> = (props) => {
     }
   }
 
-  const rotateChevronIcon =
-    typeof props.__idx == 'number' && ctx.activeIdxes.includes(props.__idx)
+  const rotateChevronIcon = () => {
+    return (
+      typeof props.__idx == 'number' && ctx.activeIdxes.includes(props.__idx)
+    )
+  }
 
-  return (
-    <button
-      onClick={handleClick}
-      className={clsx(
-        'w-full flex flex-nowrap justify-start items-center py-2',
-        props.className,
-      )}
-    >
+  const isActive = () => {
+    return (
+      typeof props.__idx == 'number' &&
+      !!ctx.activeIdxes.length &&
+      ctx.activeIdxes.includes(props.__idx)
+    )
+  }
+
+  const btnProps = {
+    id: 'expansion-panel-btn',
+    onClick: handleClick,
+    'aria-controls': 'expansion-panel-item',
+    'aria-expanded': isActive() ? 'true' : 'false',
+    className: clsx(
+      'w-full flex flex-nowrap justify-start items-center py-2',
+      props.className,
+    ),
+  }
+
+  const children = (
+    <>
       {props.children}
       <span className="grow" />
       <ChevronDownIcon
         className={clsx(
           'h-4 w-4 text-inherit mt-2 transition-rotate duration-200 ease-in',
-          { 'rotate-180': rotateChevronIcon },
+          { 'rotate-180': rotateChevronIcon() },
         )}
       />
-    </button>
+    </>
   )
+
+  return React.createElement(btnTag, btnProps, children)
 }
 
 export default Object.assign(Panel, {
   Item,
-  Header: ItemHeader,
+  Button: ItemButton,
 })

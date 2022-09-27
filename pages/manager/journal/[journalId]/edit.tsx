@@ -14,6 +14,7 @@ import {
   journalInformation,
   JournalSubjectArea,
   PublicationFrequency,
+  ServerProps,
   ServerPublicationFrequency,
 } from '../../../../@globalTypes'
 import Button from '../../../../components/Button'
@@ -187,9 +188,9 @@ const JournalSection: React.FC<JournalCredential> = (props) => {
 
   return (
     <div className="grid grid-cols-6 bg-layout-col rounded-b-lg border border-border-col">
-      <div className="col-start-1 col-span-6 md:col-start-2 md:col-span-4 p-6">
+      <section className="col-start-1 col-span-6 md:col-start-2 md:col-span-4 p-6">
         <p>{error && error.message}</p>
-        <h2 className="text-xl font-bold mb-6">Edit Credentials</h2>
+        <h3 className="text-xl font-bold mb-6">Edit Credentials</h3>
         {initialValues && Object.keys(initialValues).length && (
           <Formik
             initialValues={initialValues}
@@ -206,7 +207,7 @@ const JournalSection: React.FC<JournalCredential> = (props) => {
             )}
           </Formik>
         )}
-      </div>
+      </section>
     </div>
   )
 }
@@ -307,8 +308,8 @@ const JournalInfoSection: React.FC<InformationSection> = (props) => {
 
   return (
     <div className="grid grid-cols-6 bg-layout-col rounded-b-lg border border-border-col">
-      <div className="col-start-1 col-span-6 md:col-start-2 md:col-span-4 p-3">
-        <h2 className="text-xl font-bold mb-6">Edit information</h2>
+      <section className="col-start-1 col-span-6 md:col-start-2 md:col-span-4 p-3">
+        <h3 className="text-xl font-bold mb-6">Edit information</h3>
         <form onSubmit={handleSubmission}>
           {sections.map((section) => (
             <div key={section.id}>
@@ -331,7 +332,7 @@ const JournalInfoSection: React.FC<InformationSection> = (props) => {
             {ops.loading ? 'loading' : 'submit'}
           </Button>
         </form>
-      </div>
+      </section>
     </div>
   )
 }
@@ -501,9 +502,9 @@ const SubjectAreaSection: React.FC<SubjectAreaSection> = (props) => {
 
   return (
     <div className="grid grid-cols-6 bg-layout-col rounded-b-lg border border-border-col">
-      <div className="col-start-1 col-span-6 md:col-start-2 md:col-span-4 p-3">
+      <section className="col-start-1 col-span-6 md:col-start-2 md:col-span-4 p-3">
         <p>{ops.error && ops.error.message}</p>
-        <h2 className="text-xl font-bold mb-6">Add Subject Areas</h2>
+        <h3 className="text-xl font-bold mb-6">Add Subject Areas</h3>
         <form onSubmit={handleSubmission}>
           {subjectAreas.map((value) => (
             <div key={value.id} className="flex flex-nowrap">
@@ -518,7 +519,7 @@ const SubjectAreaSection: React.FC<SubjectAreaSection> = (props) => {
                     className="ml-1"
                     onClick={deleteSubjectArea(value.id)}
                   >
-                    <XCircleIcon className="text-header-col" />
+                    <XCircleIcon className="text-header-col w-5 h-5" />
                   </Button>
                 }
               />
@@ -529,13 +530,13 @@ const SubjectAreaSection: React.FC<SubjectAreaSection> = (props) => {
             onClick={addSubjectArea}
             className="border border-2 border-primary mb-6"
           >
-            <PlusIcon className="text-primary" />
+            <PlusIcon className="text-primary w-5 h-5" />
           </Button>
           <Button fullWidth type="submit">
             submit
           </Button>
         </form>
-      </div>
+      </section>
     </div>
   )
 }
@@ -569,7 +570,7 @@ const EditJournalPage: NextPage<Props> = (props) => {
   return (
     <Layout>
       <main>
-        <div className="container mx-auto">
+        <section className="container mx-auto">
           <h1 className="text-3xl font-bold my-6 text-header-col">
             Journal Management Settings
           </h1>
@@ -579,24 +580,26 @@ const EditJournalPage: NextPage<Props> = (props) => {
                 {({ isActive }) => (
                   <>
                     {panels.map((panel, i) => (
-                      <ExpansionPanel.Item index={i} key={panel.title}>
-                        <ExpansionPanel.Header
-                          className={clsx(...cssClassNames, {
-                            'rounded-t-lg': isActive(i),
-                            'rounded-lg': !isActive(i),
-                          })}
-                        >
-                          {panel.title}
-                        </ExpansionPanel.Header>
-                        {panel.component}
-                      </ExpansionPanel.Item>
+                      <div className="mb-3" key={panel.title}>
+                        <ExpansionPanel.Item index={i}>
+                          <ExpansionPanel.Button
+                            className={clsx(...cssClassNames, {
+                              'rounded-t-lg': isActive(i),
+                              'rounded-lg': !isActive(i),
+                            })}
+                          >
+                            {panel.title}
+                          </ExpansionPanel.Button>
+                          {panel.component}
+                        </ExpansionPanel.Item>
+                      </div>
                     ))}
                   </>
                 )}
               </ExpansionPanel>
             </div>
           </div>
-        </div>
+        </section>
       </main>
     </Layout>
   )
@@ -604,9 +607,7 @@ const EditJournalPage: NextPage<Props> = (props) => {
 
 export default EditJournalPage
 
-export const getServerSideProps = async (
-  ctx: NextPageContext,
-): Promise<{ props: Props }> => {
+export const getServerSideProps: ServerProps<Props> = async (ctx) => {
   // const {
   //   data: { subjectAreas },
   // } = await client(ctx).query({

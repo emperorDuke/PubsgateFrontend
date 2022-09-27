@@ -26,17 +26,19 @@ export interface PanelProps {
   totalPanel: number
   accordion?: boolean
   requireResolve?: boolean
+  as?: React.ElementType
 }
 
 export interface ItemProps {
   children?: React.ReactNode
   index: number
-  as?: string
+  as?: React.ElementType
   className?: string
 }
 
-export interface ItemHeaderProps {
+export interface ItemButtonProps {
   children?: React.ReactNode
+  as?: React.ElementType
   className?: string
   __idx?: number
 }

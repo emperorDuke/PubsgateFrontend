@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client'
 import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
 import clsx from 'classNames'
 import { Formik } from 'formik'
-import { NextPage, NextPageContext } from 'next'
+import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { Descendant } from 'slate'
@@ -520,6 +520,7 @@ const SubjectAreaSection: React.FC<SubjectAreaSection> = (props) => {
                     onClick={deleteSubjectArea(value.id)}
                   >
                     <XCircleIcon className="text-header-col w-5 h-5" />
+                    <span className="sr-only">remove {value.label}</span>
                   </Button>
                 }
               />
@@ -531,6 +532,7 @@ const SubjectAreaSection: React.FC<SubjectAreaSection> = (props) => {
             className="border border-2 border-primary mb-6"
           >
             <PlusIcon className="text-primary w-5 h-5" />
+            <span className="sr-only">add a new subject area</span>
           </Button>
           <Button fullWidth type="submit">
             submit
@@ -543,8 +545,8 @@ const SubjectAreaSection: React.FC<SubjectAreaSection> = (props) => {
 
 const EditJournalPage: NextPage<Props> = (props) => {
   const cssClassNames = [
-    'text-2xl font-bold mb-1',
-    'bg-layout-col p-3 text-header-col',
+    'text-2xl font-bold p-3',
+    'bg-layout-col text-header-col',
     'border border-border-col',
     'active:border-secondary',
     'hover:border-border-col-dark',
@@ -580,19 +582,23 @@ const EditJournalPage: NextPage<Props> = (props) => {
                 {({ isActive }) => (
                   <>
                     {panels.map((panel, i) => (
-                      <div className="mb-3" key={panel.title}>
-                        <ExpansionPanel.Item index={i}>
-                          <ExpansionPanel.Button
-                            className={clsx(...cssClassNames, {
-                              'rounded-t-lg': isActive(i),
-                              'rounded-lg': !isActive(i),
-                            })}
-                          >
-                            {panel.title}
-                          </ExpansionPanel.Button>
-                          {panel.component}
-                        </ExpansionPanel.Item>
-                      </div>
+                      <ExpansionPanel.Item
+                        key={panel.title}
+                        index={i}
+                        className="mb-3"
+                      >
+                        <ExpansionPanel.Button
+                          className={clsx(cssClassNames, {
+                            'rounded-t-lg': isActive(i),
+                            'rounded-lg': !isActive(i),
+                            'mb-1': isActive(i),
+                            'mb-3': !isActive(i),
+                          })}
+                        >
+                          {panel.title}
+                        </ExpansionPanel.Button>
+                        {panel.component}
+                      </ExpansionPanel.Item>
                     ))}
                   </>
                 )}

@@ -18,3 +18,16 @@ a {
 * {
   box-sizing: border-box;
 }
+
+
+@layer utilities {
+  .elevation-1 {
+      @apply border drop-shadow-md shadow-sm shadow-gray-500
+  }
+  .elevation-2 {
+    @apply border drop-shadow-md shadow-md shadow-gray-500
+  }
+  .elevation-3 {
+    @apply border drop-shadow-md shadow-lg shadow-gray-500
+  }
+}

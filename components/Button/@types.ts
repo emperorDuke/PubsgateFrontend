@@ -9,4 +9,5 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   rightIcon?: React.ReactNode
   fullWidth?: boolean
   size?: 'x-small' | 'small' | 'medium' | 'large' | 'x-large'
+  depressed?: boolean
 }

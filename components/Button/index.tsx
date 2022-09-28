@@ -15,6 +15,7 @@ const Button: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonProps> = (
     children,
     link,
     className,
+    depressed,
     type = 'button',
     size = 'medium',
     ...rest
@@ -43,8 +44,8 @@ const Button: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonProps> = (
       'px-3 py-2': isMedium && (isContained || isOutlined),
       'px-3 py-3 text-xl': isLarge && (isContained || isOutlined),
       'px-4 py-3 text-2xl': isXLarge && (isContained || isOutlined),
-      'bg-primary drop-shadow-md shadow-sm shadow-gray-500 border-transparent':
-        isContained && !link,
+      'elevation-1': !depressed && isContained && !link,
+      'bg-primary border-transparent': isContained && !link,
       'rounded-lg hover:bg-primary-dark/80': isContained && !link,
       'text-white active:border-primary-light': isContained && !link,
       'border-transparent rounded-lg bg-secondary text-white': link,

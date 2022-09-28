@@ -5,6 +5,7 @@ import React, {
   useContext,
   useMemo,
   useCallback,
+  Fragment,
 } from 'react'
 import {
   ExpansionPanelCtx,
@@ -24,7 +25,7 @@ const Panel: React.FC<PanelProps> = ({
   accordion = false,
   children,
   requireResolve = false,
-  as = React.Fragment,
+  as = Fragment,
 }) => {
   const [resolvedPanels, setResolvedPanels] = useState<ResolvedPanel[]>([])
   const [activeIdxes, setActiveIdxes] = useState<number[]>([])
@@ -136,7 +137,7 @@ const Item: React.FC<ItemProps> = (props) => {
   return (
     <ExpansionPanelContext.Consumer>
       {(ctx) => (
-        <>
+        <Fragment>
           {panelHeader}
           {React.createElement(
             wrapperJsx,
@@ -151,7 +152,7 @@ const Item: React.FC<ItemProps> = (props) => {
             },
             children,
           )}
-        </>
+        </Fragment>
       )}
     </ExpansionPanelContext.Consumer>
   )
@@ -202,16 +203,16 @@ const ItemButton: React.FC<ItemButtonProps> = (props) => {
   }
 
   const children = (
-    <>
+    <Fragment>
       {props.children}
-      <span className="grow" />
+      <span className="grow" aria-hidden="true" />
       <ChevronDownIcon
         className={clsx(
           'h-4 w-4 text-inherit mt-2 transition-rotate duration-200 ease-in',
           { 'rotate-180': rotateChevronIcon() },
         )}
       />
-    </>
+    </Fragment>
   )
 
   return React.createElement(btnTag, btnProps, children)

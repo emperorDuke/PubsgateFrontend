@@ -39,6 +39,7 @@ export interface ItemProps {
 export interface ItemButtonProps {
   children?: React.ReactNode
   as?: React.ElementType
+  useCaret?: boolean
   className?: string
   __idx?: number
 }

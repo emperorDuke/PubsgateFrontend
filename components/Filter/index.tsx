@@ -1,5 +1,9 @@
 import { Menu } from '@headlessui/react'
-import { ChevronDownIcon, FilterIcon, XIcon } from '@heroicons/react/solid'
+import {
+  ChevronDownIcon,
+  FunnelIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/solid'
 import React from 'react'
 import clsx from 'classNames'
 import { FilterProps } from './@types'
@@ -79,7 +83,7 @@ const Filter: React.ComponentType<FilterProps> = (props) => {
     <div>
       <section className="flex mb-3 md:mb-6">
         <h1 className="text-xl md:text-2xl font-bold flex flex-nowrap items-center text-slate-600">
-          <FilterIcon className="w-6 h-6 mr-3" />
+          <FunnelIcon className="w-6 h-6 mr-3" />
           Filters
         </h1>
 
@@ -87,7 +91,7 @@ const Filter: React.ComponentType<FilterProps> = (props) => {
 
         {props.dismissable ? (
           <Button variant="icon" onClick={props.onClose}>
-            <XIcon className="w-6 h-6" />
+            <XMarkIcon className="w-6 h-6" />
           </Button>
         ) : (
           <div className="h-10 w-5 block" />
@@ -96,7 +100,7 @@ const Filter: React.ComponentType<FilterProps> = (props) => {
 
       {props.dismissable && <hr className="my-3 bg-gray-300 h" />}
 
-      <section className="p-3 bg-slate-200 rounded-lg space-y-3 border border-solid border-gray-300">
+      <section className="p-3 bg-layout-col rounded-lg space-y-3">
         <Menu as="div">
           {({ open }) => (
             <React.Fragment>

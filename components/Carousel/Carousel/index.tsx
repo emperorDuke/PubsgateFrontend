@@ -4,7 +4,7 @@ import { CarouselProps, TransitionEndPayload } from './@types'
 import { reducer } from '../reducer'
 import { getNextPayload, getPrevPayload } from '../utils'
 import { CarouselItemProps } from '../CarouselItem/@types'
-import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/solid'
+import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/solid'
 import Indicator from '../Indicator'
 import { useIsomorphicLayoutEffect } from '../../../utils/hooks'
 import { debounce } from '../../../utils/customFunctions'
@@ -248,7 +248,7 @@ const Carousel: React.ComponentType<CarouselProps> = (props) => {
       <React.Fragment>
         {childrenWithClone.map(
           (child) =>
-            React.isValidElement(child) &&
+            React.isValidElement<CarouselItemProps>(child) &&
             React.cloneElement(child, {
               style: {
                 transform: `translateX(${state.position}px)`,

@@ -1,4 +1,4 @@
-import { UserIcon } from '@heroicons/react/solid'
+import { UserIcon } from '@heroicons/react/24/solid'
 import React from 'react'
 import Footer from '../Footer'
 import Header from '../Header'

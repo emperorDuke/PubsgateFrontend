@@ -15,7 +15,7 @@ import {
   PanelProps,
   ResolvedPanel,
 } from './@types'
-import { ChevronDownIcon } from '@heroicons/react/solid'
+import { ChevronDownIcon, PlusIcon, MinusIcon } from '@heroicons/react/20/solid'
 import clsx from 'classNames'
 import { ExpansionPanelContext } from './context'
 
@@ -162,6 +162,7 @@ const Item: React.FC<ItemProps> = (props) => {
 const ItemButton: React.FC<ItemButtonProps> = (props) => {
   const ctx = useContext(ExpansionPanelContext)
   const btnTag = props.as || 'button'
+  const caret = props.useCaret || false
 
   const handleClick = () => {
     if (typeof props.__idx == 'number' && !ctx.requireResolve) {
@@ -204,14 +205,25 @@ const ItemButton: React.FC<ItemButtonProps> = (props) => {
 
   const children = (
     <Fragment>
-      {props.children}
-      <span className="grow" aria-hidden="true" />
-      <ChevronDownIcon
-        className={clsx(
-          'h-4 w-4 text-inherit mt-2 transition-rotate duration-200 ease-in',
-          { 'rotate-180': rotateChevronIcon() },
+      <span className="mr-3">
+        {rotateChevronIcon() ? (
+          <MinusIcon className="h-5 w-5 text-inherit mt-2" />
+        ) : (
+          <PlusIcon className="h-5 w-5 text-inherit mt-2" />
         )}
-      />
+      </span>
+      {props.children}
+      {caret && (
+        <>
+          <span className="grow" aria-hidden="true" />
+          <ChevronDownIcon
+            className={clsx(
+              'h-4 w-4 text-inherit mt-2 transition-rotate duration-200 ease-in',
+              { 'rotate-180': rotateChevronIcon() },
+            )}
+          />
+        </>
+      )}
     </Fragment>
   )
 

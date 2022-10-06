@@ -40,7 +40,7 @@ const Input: React.ComponentType<InputProps> = (props) => {
           {...inputProps}
           {...rest}
           className={clsx(
-            'border-solid border rounded-lg py-3 px-2 w-full border-border-col',
+            'border-solid border rounded-lg py-3 px-2 w-full',
             'active:border-sky-600 placeholder-slate-400',
             'focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500',
             'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200',

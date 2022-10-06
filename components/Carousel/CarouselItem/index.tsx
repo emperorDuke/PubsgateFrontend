@@ -45,7 +45,7 @@ const CarouselItem: ForwardRefRenderFunction<
       {props.caption && captionEl}
       {React.Children.map(props.children, (child, i) =>
         React.isValidElement(child)
-          ? React.cloneElement(child, {
+          ? React.cloneElement<any>(child, {
               style: defaultStyle,
             })
           : child,

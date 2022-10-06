@@ -10,7 +10,7 @@ const SubjectNavigation: React.ComponentType<SubjectNavigationProps> = (
       {props.subjects.map((subject) => (
         <li
           key={subject.id}
-          className="bg-slate-200 first:rounded-t-lg last:rounded-b-lg flex hover:bg-primary border border-solid border-border-col"
+          className="bg-layout-col first:rounded-t-lg last:rounded-b-lg flex hover:bg-primary"
         >
           <Link href={`/journals?discipline=${subject.slug}`}>
             <a className="p-3 capitalize text-md md:text-lg w-full hover:underline hover:text-white font-medium">

@@ -1,5 +1,5 @@
 import { Listbox } from '@headlessui/react'
-import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid'
+import { CheckIcon, ChevronDownIcon } from '@heroicons/react/24/solid'
 import { useRouter } from 'next/router'
 import React from 'react'
 import {

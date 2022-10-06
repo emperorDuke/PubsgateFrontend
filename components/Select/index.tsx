@@ -30,7 +30,7 @@ const Select: React.ComponentType<SelectProps> = (props) => {
         {...inputProps}
         {...rest}
         className={clsx(
-          'border-solid border border-border-col rounded-lg py-3 px-2 w-full capitalize bg-white',
+          'rounded-lg py-3 px-2 w-full capitalize bg-white',
           'active:border-sky-600 placeholder-slate-400',
           'focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500',
           'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200',

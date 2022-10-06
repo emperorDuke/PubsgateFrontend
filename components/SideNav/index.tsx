@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { SideNavProps } from './@types'
 import Button from '../Button'
-import { XIcon } from '@heroicons/react/solid'
+import { XMarkIcon } from '@heroicons/react/24/solid'
 
 const SideNav: React.ComponentType<SideNavProps> = (props) => {
   useEffect(() => {
@@ -21,7 +21,7 @@ const SideNav: React.ComponentType<SideNavProps> = (props) => {
             <div className="flex">
               <div className="grow"></div>
               <Button onClick={props.onClose} variant="icon">
-                <XIcon className="w-6 h-6" />
+                <XMarkIcon className="w-6 h-6" />
               </Button>
             </div>
 

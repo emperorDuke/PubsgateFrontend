@@ -3,9 +3,9 @@ import Link from 'next/link'
 import clsx from 'classNames'
 import {
   ShoppingCartIcon,
-  MenuIcon,
+  Bars3Icon,
   ChevronDownIcon,
-} from '@heroicons/react/solid'
+} from '@heroicons/react/24/solid'
 import SideNav from '../SideNav'
 import Button from '../Button'
 import NavBar from '../NavBar'
@@ -121,7 +121,7 @@ const Header: React.ComponentType = () => {
           variant="icon"
           onClick={toggleSideNav}
         >
-          <MenuIcon className="h-6 w-6 text-white" />
+          <Bars3Icon className="h-6 w-6 text-white" />
         </Button>
         <h5 className="text-3xl md:text-4xl font-serif text-white">Pubsgate</h5>
         <div className="grow"></div>

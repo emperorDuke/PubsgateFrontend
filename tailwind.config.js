@@ -15,7 +15,7 @@ module.exports = {
           light: colors.slate['500']
         },
         'layout-col': {
-          DEFAULT: colors.slate['200']
+          DEFAULT: colors.slate['100']
         },
         'header-col': {
           DEFAULT: colors.slate['600']

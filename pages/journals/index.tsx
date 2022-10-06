@@ -1,5 +1,5 @@
 import { Dialog, Tab } from '@headlessui/react'
-import { ArrowRightIcon, FilterIcon, KeyIcon } from '@heroicons/react/solid'
+import { ArrowRightIcon, FunnelIcon, KeyIcon } from '@heroicons/react/24/solid'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -91,11 +91,11 @@ const JournalsPage: NextPage = () => {
               <h1 className="text-3xl md:text-4xl font-bold mb-6 text-header-col">
                 Find Journals or Articles
               </h1>
-              <SearchBar variant="contained" depressSearchBtn />
+              <SearchBar variant="contained" />
             </section>
 
             <div className="md:hidden">
-              <hr className="my-3 bg-border-col h"></hr>
+              <hr className="my-3 bg-border-col h" />
 
               <section className="flex my-3 items-center">
                 <p className="text-2xl md:text-3xl font-bold text-header-col">
@@ -105,7 +105,7 @@ const JournalsPage: NextPage = () => {
                 <Button
                   variant="outlined"
                   onClick={handleDialogOpen}
-                  leftIcon={<FilterIcon className="w-5 h-5" />}
+                  leftIcon={<FunnelIcon className="w-5 h-5" />}
                 >
                   show filters
                 </Button>
@@ -133,7 +133,7 @@ const JournalsPage: NextPage = () => {
                     </Tab>
                   ))}
                 </Tab.List>
-                <Tab.Panels className="bg-slate-200 p-6 rounded-b-lg rounded-r-lg border border-solid border-gray-300">
+                <Tab.Panels className="bg-layout-col p-6 rounded-b-lg rounded-r-lg">
                   <Tab.Panel>
                     <div className="grid grid-cols-8 gap-6">
                       <div className="col-span-4">

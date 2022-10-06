@@ -1,14 +1,13 @@
-import { Dialog, Listbox } from '@headlessui/react'
+import { Listbox } from '@headlessui/react'
 import {
-  AdjustmentsIcon,
+  AdjustmentsHorizontalIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  SearchIcon,
-  SortAscendingIcon,
-  SortDescendingIcon,
-  XIcon,
-} from '@heroicons/react/solid'
+  MagnifyingGlassIcon,
+  BarsArrowUpIcon,
+  BarsArrowDownIcon,
+} from '@heroicons/react/24/solid'
 import Link from 'next/link'
 import React from 'react'
 import Button from '../../../../components/Button'
@@ -18,31 +17,46 @@ import { NextPage } from 'next'
 import Input from '../../../../components/Input'
 import Head from 'next/head'
 
-interface ClickedSchema {
-  id: number | string
-  from: 'editor' | 'reviewer'
-}
-
 const submissions = [
   {
     id: 1,
+    manuscriptId: 3455,
+    articleType: 'research article',
+    version: 1,
     title: 'Pretreatment optimization of bio ethanol production',
     authors: 'John Doe, Duke Effiom, Vitaiij Dagmara',
+    createAt: new Date().toISOString().split('T')[0],
+    academicEditor: null,
   },
   {
     id: 2,
+    manuscriptId: 3455,
+    articleType: 'research article',
+    version: 1,
     title: 'Pretreatment optimization of bio ethanol production',
     authors: 'John Doe, Duke Effiom, Vitaiij Dagmara',
+    createAt: new Date().toISOString().split('T')[0],
+    academicEditor: null,
   },
   {
     id: 3,
+    manuscriptId: 3455,
+    articleType: 'research article',
+    version: 1,
     title: 'Pretreatment optimization of bio ethanol production',
     authors: 'John Doe, Duke Effiom, Vitaiij Dagmara',
+    createAt: new Date().toISOString().split('T')[0],
+    academicEditor: null,
   },
   {
     id: 4,
+    manuscriptId: 3455,
+    articleType: 'research article',
+    version: 1,
     title: 'Pretreatment optimization of bio ethanol production',
     authors: 'John Doe, Duke Effiom, Vitaiij Dagmara',
+    createAt: new Date().toISOString().split('T')[0],
+    academicEditor: null,
   },
 ]
 
@@ -104,7 +118,7 @@ const SearchBar: React.FC = () => {
           'rounded-t-lg': showAdvanceSearch,
           'rounded-lg': !showAdvanceSearch,
           'bg-white elevation-1': inputFocus,
-          'bg-layout-col border border-border-col': !inputFocus,
+          'bg-layout-col border border-transparent': !inputFocus,
         })}
       >
         <input
@@ -124,7 +138,7 @@ const SearchBar: React.FC = () => {
             aria-expanded={showAdvanceSearch ? 'true' : 'false'}
             onClick={() => setShowAdvanceSearch((prev) => !prev)}
           >
-            <AdjustmentsIcon className="w-5 h-5 rotate-90 text-header-col" />
+            <AdjustmentsHorizontalIcon className="w-5 h-5 text-header-col" />
             <span
               className="sr-only"
               id={`advance-search-label${advancedSearchLabelId}`}
@@ -140,7 +154,7 @@ const SearchBar: React.FC = () => {
         <Button
           className="h-inherit"
           depressed
-          leftIcon={<SearchIcon className="w-5 h-5" />}
+          leftIcon={<MagnifyingGlassIcon className="w-5 h-5" />}
         >
           search
         </Button>
@@ -163,25 +177,25 @@ const SearchBar: React.FC = () => {
             label="Submission title"
             className="w-full"
             dense
-            role="search"
+            type="search"
           />
           <div className="flex space-x-3">
             <Input
               label="author first name"
               className="w-1/2"
               dense
-              role="search"
+              type="search"
             />
             <Input
               label="author last name"
               className="w-1/2"
               dense
-              role="search"
+              type="search"
             />
           </div>
           <div className="flex flex-nowrap">
             <div className="grow" aria-hidden="true" />
-            <Button leftIcon={<SearchIcon className="w-5 h-5" />}>
+            <Button leftIcon={<MagnifyingGlassIcon className="w-5 h-5" />}>
               search
             </Button>
           </div>
@@ -272,33 +286,25 @@ const JournalManagerPage: NextPage = () => {
     [],
   )
   const [selectedFilter, setSelectedFilter] = React.useState(filters[0])
-  const [isOpen, setIsOpen] = React.useState(false)
-  const [clickSubmission, setClickSubmission] = React.useState<ClickedSchema>({
-    id: '0',
-    from: 'editor',
-  })
-
-  const handleDialogClose = () => {
-    setIsOpen(false)
-  }
-
-  const handleClickedSubmission = (schema: ClickedSchema) => {
-    return () => {
-      setIsOpen(true)
-      setClickSubmission(schema)
-    }
-  }
 
   const sortIcon = (type: string) => {
     return (
       <div className="mr-3">
         {type === 'asc' ? (
-          <SortAscendingIcon className="w-5 h-5" />
+          <BarsArrowUpIcon className="w-5 h-5" />
         ) : (
-          <SortDescendingIcon className="w-5 h-5" />
+          <BarsArrowDownIcon className="w-5 h-5" />
         )}
       </div>
     )
+  }
+
+  const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+  }
+
+  const handleWithdraw = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
   }
 
   return (
@@ -306,42 +312,10 @@ const JournalManagerPage: NextPage = () => {
       <Head>
         <title>Submissions Manager | Pubsgate</title>
         <meta name="description" content="Journals submissions manager" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Dialog open={isOpen} onClose={() => {}} className="relative z-50">
-        <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
-
-        <Dialog.Panel className="fixed inset-0 flex items-center justify-center">
-          <div className="mx-auto bg-white h-1/2 w-1/2 rounded-lg">
-            <div className="flex flex-nowrap items-center bg-primary rounded-t-lg py-2 px-3">
-              <span className="text-2xl text-white font-bold">
-                {clickSubmission.from === 'editor' ? 'Editors' : 'Reviewers'}
-              </span>
-              <div className="grow" aria-hidden="true" />
-              <Button
-                variant="icon"
-                onClick={handleDialogClose}
-                className="hover:!bg-secondary-light/40 active:!bg-secondary-light/70"
-              >
-                <XIcon className="w-6 h-6 text-white" />
-                <span className="sr-only">close dialog</span>
-              </Button>
-            </div>
-            <div className="px-6 py-3">
-              <ul className="list-disc">
-                <li className="ml-3">Dr Effiom Duke: Line Editor</li>
-                <li className="ml-3">Dr Effiom Duke: Line Editor</li>
-                <li className="ml-3">Dr Effiom Duke: Line Editor</li>
-                <li className="ml-3">Dr Effiom Duke: Line Editor</li>
-              </ul>
-            </div>
-          </div>
-        </Dialog.Panel>
-      </Dialog>
-
       <main className="mx-auto container grid grid-cols-8 gap-6 py-6">
-        <aside className="bg-layout-col p-3 rounded-lg col-span-2 border-border-col border">
+        <aside className="bg-layout-col p-3 rounded-lg col-span-2">
           <Navigation />
         </aside>
 
@@ -358,11 +332,11 @@ const JournalManagerPage: NextPage = () => {
               className="flex flex-nowrap rounded-t-lg bg-secondary mb-3 py-2 px-3 items-center"
               role="toolbar"
             >
-              <div className="grow" />
+              <div className="grow" aria-hidden="true" />
               <div className="flex nowrap items-center">
                 <Button
                   variant="icon"
-                  className="hover:!bg-secondary-light/60 active:!bg-secondary-light/80"
+                  className="hover:!bg-secondary-light/60 active:!bg-secondary-light/80 focus:!bg-secondary-light/60"
                 >
                   <ChevronLeftIcon className="w-5 h-5 text-white" />
                   <span className="sr-only">previous group of submissions</span>
@@ -372,14 +346,17 @@ const JournalManagerPage: NextPage = () => {
                 </p>
                 <Button
                   variant="icon"
-                  className="hover:!bg-secondary-light/60 active:!bg-secondary-light/80"
+                  className="hover:!bg-secondary-light/60 active:!bg-secondary-light/80 focus:!bg-secondary-light/60"
                 >
                   <ChevronRightIcon className="w-5 h-5 text-white" />
                   <span className="sr-only">next group of submissions</span>
                 </Button>
               </div>
 
-              <hr className="w-5 bg-white rotate-90 mx-3" />
+              <hr
+                className="w-5 bg-white rotate-90 mx-3"
+                aria-orientation="vertical"
+              />
 
               <Listbox
                 value={selectedFilter}
@@ -427,48 +404,69 @@ const JournalManagerPage: NextPage = () => {
               {submissions.map((submission) => (
                 <li
                   key={submission.id}
-                  className="w-full border-border-col border p-3 last:rounded-b-lg bg-layout-col"
+                  className="w-full border-transparent border p-3 last:rounded-b-lg bg-layout-col hover:bg-white hover:rounded-lg hover:elevation-2 group"
                 >
-                  <Link href="/">
-                    <a className="font-bold text-header-col group">
-                      <div className="group-hover:text-primary group-hover:underline group-focus:text-blue-500 flex flex-nowrap items-center">
+                  <Link href="/manager/journal/3553/submission">
+                    <a className="text-header-col">
+                      <div className="flex flex-nowrap items-center mb-3">
                         <div className="w-[90%]">
-                          <p>{submission.title}</p>
-                          <p className="font-semibold text-sm truncate py-2">
+                          <p className="space-x-3 mb-2">
+                            <span className="font-bold text-sm py-1 px-2 bg-green-500 text-white">
+                              ID: {submission.manuscriptId}
+                            </span>
+                            <span className="text-sm font-bold px-2 py-1 capitalize bg-red-300 focus:text-none">
+                              {`V${submission.version}`}
+                            </span>
+                            <span className="text-sm font-bold px-2 py-1 bg-primary-light focus:text-none">
+                              {submission.articleType}
+                            </span>
+                          </p>
+
+                          <p className="font-bold py-1">{submission.title}</p>
+                          <p className="font-semibold text-sm truncate py-1">
                             {submission.authors}
                           </p>
+
+                          <p className="font-semibold text-xs text-secondary-light group-hover:text-header-col group-hover:bg-layout-col group-hover:rounded-lg inline group-hover:pl-2 pr-2 py-2">
+                            <span className="font-bold mr-3">
+                              Academic editor:
+                            </span>
+                            <span>
+                              {submission.academicEditor || 'unassigned'}
+                            </span>
+                          </p>
                         </div>
-                        <p className="text-sm font-semibold">40 min ago</p>
+                        <div className="space-y-2 flex flex-col justify-center">
+                          <time
+                            dateTime={submission.createAt}
+                            className="text-sm font-semibold"
+                          >
+                            {submission.createAt}
+                          </time>
+                          <p className="text-xs font-semibold">40 min ago</p>
+                        </div>
+                      </div>
+
+                      <hr className="border border-t-border-col w-full mt-3" />
+
+                      <div className="mt-3 flex flex-nowrap items-center space-x-3">
+                        <Button
+                          variant="outlined"
+                          size="x-small"
+                          onClick={handleWithdraw}
+                        >
+                          withdraw
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          size="x-small"
+                          onClick={handleDelete}
+                        >
+                          delete
+                        </Button>
                       </div>
                     </a>
                   </Link>
-
-                  <hr className="border border-t-border-col w-full" />
-
-                  <div className="mt-3 flex flex-nowrap items-center space-x-3">
-                    <Button
-                      aria-haspopup="dialog"
-                      variant="outlined"
-                      size="x-small"
-                      onClick={handleClickedSubmission({
-                        id: submission.id,
-                        from: 'reviewer',
-                      })}
-                    >
-                      reviewers
-                    </Button>
-                    <Button
-                      aria-haspopup="dialog"
-                      variant="outlined"
-                      size="x-small"
-                      onClick={handleClickedSubmission({
-                        id: submission.id,
-                        from: 'editor',
-                      })}
-                    >
-                      editors
-                    </Button>
-                  </div>
                 </li>
               ))}
             </ul>

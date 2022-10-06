@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client'
-import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
+import { PlusIcon, XCircleIcon } from '@heroicons/react/24/solid'
 import clsx from 'classNames'
 import { Formik } from 'formik'
 import { NextPage } from 'next'

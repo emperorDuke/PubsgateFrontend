@@ -27,11 +27,12 @@ interface Reviewer {
   name: string
 }
 
-type ListItemElement = (
-  reviewer: Reviewer,
-  reviewerCategory: ReviewerCategory,
-  btn: JSX.Element,
-) => JSX.Element
+type ListItemElement = (param: {
+  reviewer: Reviewer
+  reviewerCategory: ReviewerCategory
+  isLast: boolean
+  btn: JSX.Element
+}) => JSX.Element
 
 const PDFViewer = dynamic(() => import('../../../../components/PDFViewer'))
 
@@ -71,7 +72,8 @@ const SubmissionReviewers = () => {
     return () => setIsHovered(param)
   }
 
-  const listItem: ListItemElement = (reviewer, category, btn) => {
+  const listItem: ListItemElement = (param) => {
+    const { reviewer, reviewerCategory, isLast, btn } = param
     const isActive = hoveredEl === `${reviewer.id}`
     const isSelected = selectedItems.map((s) => s.id).includes(reviewer.id)
 
@@ -80,13 +82,21 @@ const SubmissionReviewers = () => {
         key={reviewer.id}
         onMouseEnter={handleMouseHover(`${reviewer.id}`)}
         onMouseLeave={handleMouseHover('')}
-        className="border border-b-border-col hover:bg-white hover:elevation-1 last:rounded-b-lg flex flex-nowrap items-stretch bg-slate-300/60"
+        className={clsx(
+          'border hover:bg-white hover:elevation-1 last:rounded-b-lg flex flex-nowrap items-stretch bg-slate-300/40',
+          {
+            'border-b-gray-100': !isLast,
+          },
+        )}
       >
         <Checkbox
           dense
           aria-labelledby={`checkbox-${reviewer.id}${journalReviewersId}`}
           disabled={!isSelected && !isActive}
-          onChange={handleSelectedItem({ type: category, id: reviewer.id })}
+          onChange={handleSelectedItem({
+            type: reviewerCategory,
+            id: reviewer.id,
+          })}
         />
         <Link href="/">
           <a
@@ -104,7 +114,7 @@ const SubmissionReviewers = () => {
   return (
     <div className="grid grid-cols-6 gap-6">
       <div className="col-span-3">
-        <div className="flex flex-nowrap items-center mb-3 bg-slate-400/40 p-3 rounded-t-lg">
+        <div className="flex flex-nowrap items-center mb-3 bg-slate-400/30 p-3 rounded-t-lg">
           <h2 className="text-lg font-bold">Assigned Reviewers</h2>
           <p className="ml-3 text-sm text-header-col font-semibold">
             ({selectedItems.filter((s) => s.type === 'assigned').length}
@@ -114,15 +124,18 @@ const SubmissionReviewers = () => {
         </div>
         <div className="max-h-[350px] overflow-y-auto mb-3">
           <ul className="pb-3">
-            {assignedReviewers.map((reviewer) =>
-              listItem(
+            {assignedReviewers.map((reviewer, i) =>
+              listItem({
                 reviewer,
-                'assigned',
-                <Button variant="icon">
-                  <ArrowUturnRightIcon className="w-5 h-5" />
-                  <span className="sr-only">assign reviewer</span>
-                </Button>,
-              ),
+                reviewerCategory: 'assigned',
+                isLast: i === assignedReviewers.length - 1,
+                btn: (
+                  <Button variant="icon">
+                    <ArrowUturnRightIcon className="w-5 h-5" />
+                    <span className="sr-only">assign reviewer</span>
+                  </Button>
+                ),
+              }),
             )}
           </ul>
         </div>
@@ -138,7 +151,7 @@ const SubmissionReviewers = () => {
         )}
       </div>
       <div className="col-span-3">
-        <div className="flex flex-nowrap items-center mb-3 bg-slate-400/40 p-3 rounded-t-lg">
+        <div className="flex flex-nowrap items-center mb-3 bg-slate-400/30 p-3 rounded-t-lg">
           <h2 className="text-xl font-bold">Available Reviewers</h2>
           <p className="ml-3 text-header-col font-semibold">
             ({selectedItems.filter((s) => s.type === 'available').length}
@@ -157,15 +170,18 @@ const SubmissionReviewers = () => {
 
         <div className="max-h-[350px] overflow-y-auto mb-3">
           <ul className="pb-3">
-            {reviewers.map((reviewer) =>
-              listItem(
+            {reviewers.map((reviewer, i) =>
+              listItem({
                 reviewer,
-                'available',
-                <Button variant="icon">
-                  <ArrowUturnLeftIcon className="w-5 h-5" />
-                  <span className="sr-only">assign reviewer</span>
-                </Button>,
-              ),
+                reviewerCategory: 'available',
+                isLast: i === reviewers.length - 1,
+                btn: (
+                  <Button variant="icon">
+                    <ArrowUturnLeftIcon className="w-5 h-5" />
+                    <span className="sr-only">assign reviewer</span>
+                  </Button>
+                ),
+              }),
             )}
           </ul>
         </div>
@@ -188,22 +204,22 @@ const ReviewerReport = () => {
   const report = (
     <>
       <div>
-        <p className="text-header-col font-bold my-3">
+        <p className="text-header-col font-semibold my-3">
           Is manuscript worth reviewing?
         </p>
-        <p className="p-3 rounded-lg bg-white">yes</p>
+        <p className="rounded p-3 bg-white">yes</p>
       </div>
       <div>
-        <p className="text-header-col font-bold my-3">
+        <p className="text-header-col font-semibold my-3">
           To what extent does it meet criterion?
         </p>
-        <p className="p-3 rounded-lg bg-white">
+        <p className="rounded p-3 bg-white h-[150px] overflow-auto">
           it does not meet our criterion because of the concept are unpractical
         </p>
       </div>
       <div>
-        <p className="text-header-col font-bold my-3">Author comments</p>
-        <p className="p-3 rounded-lg bg-white">
+        <p className="text-header-col font-semibold my-3">Author comments</p>
+        <p className="p-3 rounded bg-white h-[350px] overflow-auto">
           it does not meet our criterion because of the concept are unpractical
           it does not meet our criterion because of the concept are unpractical
           it does not meet our criterion because of the concept are unpractical
@@ -231,22 +247,22 @@ const ReviewerReport = () => {
       </form> */}
       <div className="grid grid-cols-6 gap-6">
         <div className="col-span-2">
-          <h2 className="text-xl font-bold text-header-col p-3 bg-red-300">
+          <h2 className="text-lg font-bold p-3 bg-slate-400/30 rounded-t-lg truncate mb-3">
             Reviewer 1: Dr andrew Effiom
           </h2>
-          {report}
+          <div className="p-3 bg-slate-300/40 rounded-b-lg">{report}</div>
         </div>
         <div className="col-span-2">
-          <h2 className="text-xl font-bold text-header-col p-3 bg-green-500">
+          <h2 className="text-lg font-bold p-3 bg-slate-400/30 rounded-t-lg truncate mb-3">
             Reviewer 2: Dr andrew Effiom
           </h2>
-          {report}
+          <div className="p-3 bg-slate-300/40 rounded-b-lg">{report}</div>
         </div>
         <div className="col-span-2">
-          <h2 className="text-xl font-bold text-header-col p-3 bg-blue-300">
+          <h2 className="text-lg font-bold p-3 bg-slate-400/30 rounded-t-lg truncate mb-3">
             Reviewer 3: Dr andrew Effiom
           </h2>
-          {report}
+          <div className="p-3 bg-slate-300/40 rounded-b-lg">{report}</div>
         </div>
       </div>
     </div>
@@ -316,13 +332,13 @@ const SubmissionPage = () => {
                       <ExpansionPanel.Item
                         key={expandableItem.id}
                         index={i}
-                        className="mb-3 p-6 rounded-b-lg bg-slate-200"
+                        className="mb-3 p-6 rounded-b-lg bg-slate-200/60"
                       >
                         <ExpansionPanel.Button
                           className={clsx(
                             'text-2xl font-bold mb-6 px-3 text-header-col border border-transparent hover:elevation-1',
                             {
-                              'rounded-t-lg mb-1 bg-slate-200': isActive(i),
+                              'rounded-t-lg mb-1 bg-slate-200/60': isActive(i),
                               'rounded-lg mb-3 bg-slate-300': !isActive(i),
                             },
                           )}
